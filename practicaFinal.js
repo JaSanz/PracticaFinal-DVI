@@ -9,7 +9,7 @@ window.addEventListener("load",function() {
 
     // CARGA
     Q.loadTMX("level1.tmx", function() {
-        
+        Q.stageScene("level1");
     });
 
     // NIVEL 1
