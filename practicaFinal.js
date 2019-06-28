@@ -15,13 +15,55 @@ window.addEventListener("load",function() {
     // NIVEL 1
     Q.scene("level1", function(stage) {
         Q.stageTMX("level1.tmx", stage);
+
+        stage.insert(new Q.Key({x : 64, y : 112}));
+    });
+
+
+    // CABEZA
+    Q.Sprite.extend("Key", {
+        init: function(p) {
+            this._super(p, { 
+           // sprite: "key",
+            asset: "keyP.png",
+            sensor: true,
+            cogida: false,
+            gravity: 0
+        });
+        this.add("2d");
+        //this.add("tween");
+        this.on("hit", this, "hit");
+    },
+    //hit: function(collision){
+       /* if(collision.obj.isA("Mario") && !this.cogida){ 
+            Q.state.inc('coins', 1);
+            Q.state.inc('punct', 100);
+            if(Q.state.get('coins') == 100)
+                Q.audio.play('1up.mp3', { loop: false });
+            else 
+                Q.audio.play('coin.mp3', { loop: false });
+            this.cogida = true;
+            this.animate(
+                {y: this.p.y-50}, 0.3, Q.Easing.Linear, 
+                { callback: function(){ this.destroy() } });
+            if(Q.state.get('coins') == 100) {
+                Q.state.inc('lives', 1);
+                Q.state.dec('coins', 100);
+            }
+
+        }
+        */
+   // }
+
     });
 
 
 
+    // CARGA Y COMPILADO DE ARCHIVOS
+    Q.load(["keyP.png"
+        ], function() {
 
-
-
+    });
 
 
 
