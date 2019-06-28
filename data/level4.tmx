@@ -7,6 +7,9 @@
   <image source="../../../../Aroa/DVI/practica_final/PracticaFinal-DVI/images/fondo liso.png" width="272" height="224"/>
  </imagelayer>
  <layer id="1" name="collision" width="17" height="14">
+  <properties>
+   <property name="collision" value="true"/>
+  </properties>
   <data>
    <tile/>
    <tile/>
