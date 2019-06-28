@@ -3,6 +3,8 @@
 //TODO ajustar velocidad de animaciones de Dana. Comprobar con gameplays
 //TODO mirar si se pueden disparar bolas de fuego estando agachado
 
+const tamXBloques = 16;
+const tamYBloques = 16;
 const xBloques = 17;
 const yBloques = 14;
 
@@ -14,8 +16,20 @@ window.addEventListener("load", function() {
     .controls()                         // Add in default controls (keyboard, buttons)
     .touch();                            // Add in touch support (for the UI)
 
+    // CARGA
+    Q.loadTMX("level1.tmx", function() {
+        Q.stageScene("level1");
+    });
+
+    // NIVEL 1
+    Q.scene("level1", function(stage) {
+        Q.stageTMX("level1.tmx", stage);
+        stage.insert(new Q.Dana({x : 32, y : 32}));
+        //stage.insert(new Q.Dana({x:2 * tamXBloques, y:10 * tamYBloques}));
+    });
+
     // DANA
-    Q.Sprite.extend("Mario", {
+    Q.Sprite.extend("Dana", {
         init: function(p) {
             this._super(p, {
                 sprite: "animaciones_dana",
@@ -29,9 +43,9 @@ window.addEventListener("load", function() {
 
             this.add('2d, platformerControls, animation');
 
-            this.on("muerte_t", this, "muerte");
+            //this.on("muerte_t", this, "muerte");
 
-            this.on("bump.bottom", function(collision) {
+            /*this.on("bump.bottom", function(collision) {
                 if(collision.obj.isA("Goomba") && !this.p.muerto) {
                     if(Q.inputs['up']) {
                         this.p.vy = -500;
@@ -40,7 +54,7 @@ window.addEventListener("load", function() {
                         this.p.vy = -300;
                     }
                 }
-            });
+            });*/
         },
 
         step: function(dt) {
@@ -118,13 +132,14 @@ window.addEventListener("load", function() {
                     this.play("varita_" + direccion);
 
                 if((relativeX * 16 > 1 || relativeX * 16 < 17) && relativeY > 1) {
+                    Q.state.inc
                     Q.scene("hey", function(stage) {
-                        console.log("AAAAA");
+                        console.log("Q.SCENE FUNCIONAAAAAAAAAA");
                     });
                 }
             }
             
-            else {
+            /*else {
                 if (this.p.vx != 0)
                     this.play("corriendo_" + direccion);
                 else if (this.p.vx != 0 && this.p.speed > 220)
@@ -142,20 +157,20 @@ window.addEventListener("load", function() {
                 this.p.speed -= 5;
                 if(this.p.speed < 220) 
                     this.p.speed = 220;
-            }
+            }*/
 
             //Matamos a Mario cuando se cae del escenario
-            if(this.p.y > 590 && !this.p.muerto) {
+            /*if(this.p.y > 590 && !this.p.muerto) {
                 this.muerteAux();
             }
             //Para que no se salga del borde izquierdo
             if(this.p.x < 210) {
                 this.p.x = 210;
-            }
+            }*/
             
-        },
+        }
 
-        muerteAux: function(p) {
+        /*muerteAux: function(p) {
                 if((this.p.level == 0 || this.p.y > 590) && !this.p.muerto) {
                     this.p.muerto = true;
                     Q.state.dec("lives", 1);
@@ -177,7 +192,7 @@ window.addEventListener("load", function() {
                 Q.stageScene(level);
                 Q.stageScene("hud", 1);
             }
-        }
+        }*/
 
     });
 
@@ -203,7 +218,8 @@ window.addEventListener("load", function() {
 
 
     // CARGA Y COMPILADO DE ARCHIVOS
-    Q.load(["dana.png", "dana.json"
+    Q.load(["dana.png", "dana.json",
+            "bell.png"
         ], function() {
         Q.compileSheets("dana.png", "dana.json");
     });
