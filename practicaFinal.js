@@ -27,8 +27,22 @@ window.addEventListener("load", function() {
 
         stage.insert(new Q.Key({x : 216, y : 113}));
         stage.insert(new Q.Dana({x : 32, y : 32}));
+        stage.insert(new Q.Bloque({x : 70, y : 100}));
         //stage.insert(new Q.Dana({x:2 * tamXBloques, y:10 * tamYBloques}));
     });
+
+     // Puntuación
+     Q.UI.Text.extend("Score", {
+        init: function(p) {
+            this._super(p, {
+                label: "SCORE ",
+                color: "white",
+                x: 16,
+                y: 16
+            });
+        }
+    });
+
 
     // DANA
     Q.Sprite.extend("Dana", {
@@ -220,6 +234,29 @@ window.addEventListener("load", function() {
 
     });
 
+    // Bloque
+    Q.Sprite.extend("Bloque", {
+        init: function(p) {
+            this._super(p, { 
+            asset: "orange_block.png",
+            gravity: 0,
+            roto: false
+        });
+        this.add("2d");
+        this.on("bump.bottom", this, "hit");
+        },
+        hit: function(collision){
+            if(collision.obj.isA("Dana")){ 
+                if(!this.roto) {
+                    this.p.asset = "orange_block_destroyed.png";
+                    this.roto = true;
+                }
+                else this.destroy();
+            }
+        }
+
+    });
+
 
 
 
@@ -246,7 +283,8 @@ window.addEventListener("load", function() {
 
     // CARGA Y COMPILADO DE ARCHIVOS
     Q.load(["dana.png", "dana.json",
-            "bell.png", "keyP.png"
+            "bell.png", "keyP.png",
+            "orange_block.png","orange_block_destroyed.png"
         ], function() {
         Q.compileSheets("dana.png", "dana.json");
     });
