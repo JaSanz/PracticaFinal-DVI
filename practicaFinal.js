@@ -2,6 +2,8 @@
 //TODO mirar el json. NPI de cómo hacerlo bien
 //TODO ajustar velocidad de animaciones de Dana. Comprobar con gameplays
 //TODO mirar si se pueden disparar bolas de fuego estando agachado
+//TODO sprites de impulso salto y andar agachado
+//TODO animaciones de muerte
 
 const tamXBloques = 16;
 const tamYBloques = 16;
@@ -24,11 +26,11 @@ window.addEventListener("load", function() {
     // NIVEL 1
     Q.scene("level1", function(stage) {
         Q.stageTMX("level1.tmx", stage);
+        stage.insert(new Q.Dana({x: (4 * tamXBloques), y: (8 * tamYBloques)}));
 
         stage.insert(new Q.Key({x : 216, y : 113}));
-        stage.insert(new Q.Dana({x : 32, y : 32}));
-        stage.insert(new Q.Bloque({x : 70, y : 100}));
-        //stage.insert(new Q.Dana({x:2 * tamXBloques, y:10 * tamYBloques}));
+        //stage.insert(new Q.Dana({x : 32, y : 32}));
+        stage.insert(new Q.Bloque({x : 70, y : 116}));
     });
 
      // Puntuación
@@ -49,13 +51,18 @@ window.addEventListener("load", function() {
         init: function(p) {
             this._super(p, {
                 sprite: "animaciones_dana",
-                sheet: "danaR",
-                gravity: 0,
-                jumpSpeed: -650,
-                speed: 220,
-                gravity: 1.5,
+                sheet: "danaL",
+                w: 16,
+                h:16,
+                jumpSpeed: -135,
+                speed: 45,
+                gravity: 0.5,
                 fireballs: 0,
+                block_time: 0,
+                x_action: 0,
+                y_action: 0,
                 muerto: false
+                //points: [  [ -8, -8 ], [  8, -8 ], [  -8,  8 ], [ -8,  8 ] ]//[  [ -7, -6 ], [  7, -6 ], [  -7,  8 ], [ -7,  8 ] ]
             });
 
             this.add('2d, platformerControls, animation');
@@ -72,53 +79,42 @@ window.addEventListener("load", function() {
                 }
             });*/
         },
-/*
+
         step: function(dt) {
             relativeX = -1;
             relativeY = -1;
             direccion = "";
-*/
-    
-            //quieto_derecha: {frames: [12], loop: false},
-            //quieto_izquierda: {frames: [0], loop: false},
-            //quieto_agachado_derecha: {frames: [13], loop: false},
-            //quieto_agachado_izquierda: {frames: [1], loop: false},
-            //corriendo_derecha: {frames: [14, 15, 16, 17], rate: 1/13, loop: true},
-            //corriendo_izquierda: {frames: [2, 3, 4, 5], rate: 1/13, loop: true},
-            //saltando_quieto_derecha: {frames: [12], loop: false},
-            //saltando_quieto_izquierda: {frames: [0], loop: false},
-            //saltando_corriendo_derecha: {frames: [14], loop: false},
-            //saltando_corriendo_izquierda: {frames: [2], loop: false},
-            //varita_derecha: {frames: [18, 19], rate: 1/5, loop: false},
-            //varita_izquierda: {frames: [6, 7], rate: 1/5, loop: false},
-            //varita_agachado_derecha: {frames: [20, 21, 22], rate: 1/5, loop: false},
-            //varita_agachado_izquierda: {frames: [8, 9, 10], rate: 1/5, loop: false},
-            //NOmuerte_derecha: {frames: [23], loop: false, trigger: "muerte_t"},
-            //NOmuerte_izquierda: {frames: [11], loop: false, trigger: "muerte_t"}
+
+            this.p.block_time -= dt;
+            if(this.p.block_time >= 0) {
+                this.p.x = this.p.x_action;
+                this.p.y = this.p.y_action;
+                this.vx = 0;
+                this.vy = 0;
+            }
 
             //Cogemos la dirección de Mario para usarla con las animaciones
-           /* if(this.p.direction == 'right')
+            if(this.p.direction == "right")
                 direccion = "derecha";
             else
                 direccion = "izquierda";
 
             //Animaciones
             if(this.p.vx == 0) {
-                if(this.p.landed < 0) {
+                if(Q.inputs['up'] && this.p.landed < 0)
                     this.play("saltando_quieto_" + direccion);
-                }
-                else if(this.p.landed >= 0 && Q.inputs['down'])
+                else if(Q.inputs['down'] && this.p.landed >= 0)
                     this.play("quieto_agachado_" + direccion);
                 else
                     this.play("quieto_" + direccion);
             }
             else {
-                if(this.p.landed < 0)
+                if(Q.inputs['up'] && this.p.landed < 0)
                     this.play("saltando_corriendo_" + direccion);
                 else
-                    this.play("corriendo" + direccion);
+                    this.play("corriendo_" + direccion);
             }
-*/
+
             /*
             Al pulsar el botón de acción, se debe poner o quitar un bloque. Funciona de la forma:
                 Primero cogemos la dirección del protagonista y calculamos las posiciones relativas 
@@ -132,8 +128,11 @@ window.addEventListener("load", function() {
                     un valor mayor o igual que 2. El tope de altura da igual porque nunca se alcanza.
                     NOTA: los bloque se empiezan a contar por 1.
             */
-         /*   if(Q.inputs['action']) {
-                if(direccion == 'right') {
+            if(Q.inputs['action'] && this.p.block_time <= 0) {
+                this.p.block_time = 0.15;
+                this.p.x_action = this.p.x;
+                this.p.y_action = this.p.y;
+                if(direccion == "derecha") {
                     relativeX = (this.p.x / 16) + 1;
                     relativeY = this.p.y / 16;
                 }
@@ -141,72 +140,41 @@ window.addEventListener("load", function() {
                     relativeX = (this.p.x / 16) - 1;
                     relativeY = this.p.y / 16;
                 }
-                if(Q.inputs['down']) {
+                if(Q.inputs['down'] && this.p.landed >= 0) {
                     relativeY -= 1;
-                    this.play("varita_agachado_" + direccion);
+                    this.play("varita_agachado_" + direccion, 6);
                 }
-                else
-                    this.play("varita_" + direccion);
+                else {
+                    this.play("varita_" + direccion, 6);
+                }
 
                 if((relativeX * 16 > 1 || relativeX * 16 < 17) && relativeY > 1) {
-                  
+                    console.log(this.stage.locate(relativeX * 16, relativeY * 16).p.asset);
                 }
-            }*/
+            }
             
-            /*else {
-                if (this.p.vx != 0)
-                    this.play("corriendo_" + direccion);
-                else if (this.p.vx != 0 && this.p.speed > 220)
-                    this.play("corriendo_rapido_" + direccion);
-                else
-                    this.play("quieto_" + direccion);
-            }
+        },
 
-            if(Q.inputs['fire'] && (Q.inputs['left'] || Q.inputs['right'])) {
-                this.p.speed += 5;
-                if(this.p.speed > 320) 
-                    this.p.speed = 320;
-            }
-            else {
-                this.p.speed -= 5;
-                if(this.p.speed < 220) 
-                    this.p.speed = 220;
-            }*/
-
-            //Matamos a Mario cuando se cae del escenario
-            /*if(this.p.y > 590 && !this.p.muerto) {
-                this.muerteAux();
-            }
-            //Para que no se salga del borde izquierdo
-            if(this.p.x < 210) {
-                this.p.x = 210;
-            }*/
-            
-       // }
-
-        /*muerteAux: function(p) {
-                if((this.p.level == 0 || this.p.y > 590) && !this.p.muerto) {
+        muerteAux: function(p) {
+                if(!this.p.muerto) {
                     this.p.muerto = true;
-                    Q.state.dec("lives", 1);
-                    this.p.vy = -500;
+                    //Q.state.dec("lives", 1);
                     this.p.collisionMask = Q.SPRITE_NONE;
-                    Q.audio.stop();
-		            Q.audio.play('music_die.mp3',{ loop: false });
-                    this.play("muerte", 4); //Hacemos que desaparezca a los dos segundos para evitar situaciones no deseadas
+                    this.play("muerte"); //Hacemos que desaparezca a los dos segundos para evitar situaciones no deseadas
                 }      
         },
         
         muerte: function(p) {
             this.destroy();
-            if(Q.state.get("lives") == 0)
+            /*if(Q.state.get("lives") == 0)
                 Q.stageScene("endGame",1, { label: "You Died" });
-            else {
+            else {*/
                 level = "level" + Q.state.get("level");
                 Q.clearStages();
                 Q.stageScene(level);
-                Q.stageScene("hud", 1);
-            }
-        }*/
+                //Q.stageScene("hud", 1);
+            //}
+        }
 
     });
 
@@ -272,10 +240,10 @@ window.addEventListener("load", function() {
         saltando_quieto_izquierda: {frames: [0], loop: false},
         saltando_corriendo_derecha: {frames: [14], loop: false},
         saltando_corriendo_izquierda: {frames: [2], loop: false},
-        varita_derecha: {frames: [18, 19], rate: 1/5, loop: false},
-        varita_izquierda: {frames: [6, 7], rate: 1/5, loop: false},
-        varita_agachado_derecha: {frames: [20, 21, 22], rate: 1/5, loop: false},
-        varita_agachado_izquierda: {frames: [8, 9, 10], rate: 1/5, loop: false},
+        varita_derecha: {frames: [18, 19], rate: 1/10, loop: false},
+        varita_izquierda: {frames: [6, 7], rate: 1/10, loop: false},
+        varita_agachado_derecha: {frames: [20, 21, 22], rate: 1/7, loop: false},
+        varita_agachado_izquierda: {frames: [8, 9, 10], rate: 1/7, loop: false},
         muerte_derecha: {frames: [23], loop: false, trigger: "muerte_t"},
         muerte_izquierda: {frames: [11], loop: false, trigger: "muerte_t"}
     });
