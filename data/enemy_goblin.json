@@ -1,0 +1,8 @@
+{
+    "goblinR":{"sx":0,"sy":0,"tileW":16,"tileH":16,"frames":3},
+    "goblinL":{"sx":48,"sy":0,"tileW":16,"tileH":16,"frames":3},
+    "ataqueR":{"sx":96,"sy":0,"tileW":16,"tileH":16,"frames":2},
+    "ataqueL":{"sx":128,"sy":0,"tileW":16,"tileH":16,"frames":2},
+    "goblinDieR":{"sx":160,"sy":0,"tileW":16,"tileH":16,"frames":1},
+    "goblinDieL":{"sx":176,"sy":0,"tileW":16,"tileH":16,"frames":1}
+}

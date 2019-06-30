@@ -14,13 +14,16 @@ window.addEventListener("load", function() {
 
     var Q = Quintus()                          // Create a new engine instance
     .include("Sprites, Scenes, Input, Touch, UI, 2D, TMX, Anim") // Load any needed modules
-    .setup({width:xBloques * 16, height:yBloques * 16})     // Add a canvas element onto the page
+    .setup({width:272, height:224})     // Add a canvas element onto the page
     .controls()                         // Add in default controls (keyboard, buttons)
     .touch();                            // Add in touch support (for the UI)
 
     // CARGA
-    Q.loadTMX("level1.tmx", function() {
+    Q.loadTMX("level1.tmx, level2.tmx, level3.tmx, level4.tmx", function() {
         Q.stageScene("level1");
+        //Q.stageScene("level2");
+        //Q.stageScene("level3");
+        //Q.stageScene("level4");
     });
 
     // NIVEL 1
@@ -29,10 +32,33 @@ window.addEventListener("load", function() {
         stage.insert(new Q.Dana({x: (4 * tamXBloques), y: (8 * tamYBloques)}));
 
         //stage.insert(new Q.Key({x : 216, y : 113}));
-        //stage.insert(new Q.Key({x : 200, y : 113}));
+        stage.insert(new Q.Key({x : 71, y : 100}));
         //stage.insert(new Q.Dana({x : 32, y : 32}));
-        //stage.insert(new Q.Bloque({x : 70, y : 116}));
+        stage.insert(new Q.Bloque({x : 70, y : 116}));
+        //stage.insert(new Q.Head({x : 216, y : 113}));
+        stage.insert(new Q.Goblin({x : 216, y : 113}));
+        //stage.insert(new Q.Dana({x:2 * tamXBloques, y:10 * tamYBloques}));
     });
+    // NIVEL 2
+    Q.scene("level2", function(stage) {
+        Q.stageTMX("level2.tmx", stage);
+
+        stage.insert(new Q.Head({x : 216, y : 113}));
+        //stage.insert(new Q.Dana({x:2 * tamXBloques, y:10 * tamYBloques}));
+    });
+    Q.scene("level3", function(stage) {
+        Q.stageTMX("level3.tmx", stage);
+
+        stage.insert(new Q.Head({x : 216, y : 113}));
+        //stage.insert(new Q.Dana({x:2 * tamXBloques, y:10 * tamYBloques}));
+    });
+    Q.scene("level4", function(stage) {
+        Q.stageTMX("level4.tmx", stage);
+
+        stage.insert(new Q.Head({x : 216, y : 113}));
+        //stage.insert(new Q.Dana({x:2 * tamXBloques, y:10 * tamYBloques}));
+    });
+
 
      // Puntuación
      Q.UI.Text.extend("Score", {
@@ -68,6 +94,8 @@ window.addEventListener("load", function() {
             });
 
             this.add('2d, platformerControls, animation');
+            //this.play("quieto_derecha");
+            
             //this.on("muerte_t", this, "muerte");
 
             /*this.on("bump.bottom", function(collision) {
@@ -80,7 +108,8 @@ window.addEventListener("load", function() {
                     }
                 }
             });*/
-        },
+        },       
+    
 
         step: function(dt) {
             relativeX = -1;
@@ -106,10 +135,13 @@ window.addEventListener("load", function() {
             }
 
             //Cogemos la dirección de Mario para usarla con las animaciones
-            if(this.p.direction == "right")
+            if(this.p.direction == "right") {
                 direccion = "derecha";
-            else
+            }
+            else {
                 direccion = "izquierda";
+            }
+            
 
             //Animaciones
             if(this.p.vx == 0) {
@@ -268,6 +300,80 @@ window.addEventListener("load", function() {
 
     });
 
+    // Cabeza
+    Q.Sprite.extend("Head", {
+        init: function(p) {
+            this._super(p, { 
+                sprite: "animaciones_cabeza",
+                sheet: "cabezaL",
+                vx: 20
+            });
+        this.add('2d, aiBounce, animation');
+    
+        this.on("bump.left",this, "right");
+        this.on("bump.right",this, "left");
+        this.on("bump.bottom, bump.top", function(collision) {
+            if(collision.obj.isA("Dana")) {
+                //collision.obj.muerteAux();
+            }
+        }); 
+        this.on("bump.left, bump.right", function(collision) {
+            if(collision.obj.isA("Dana")) {
+                //collision.obj.muerteAux();
+            }
+            else if (collision.obj.isA("Block")){
+                collision.obj.destroy();
+            }
+        });          
+        },
+        left: function(dt) {
+            //this.play("ataque_derecha");
+            this.play("izquierda");
+        },
+        right: function(dt) {
+            //this.play("ataque_izquierda");
+            this.play("derecha");
+        }
+    });
+
+    // Goblin-Puños
+    Q.Sprite.extend("Goblin", {
+        init: function(p) {
+            this._super(p, { 
+                sprite: "animaciones_goblin",
+                sheet: "goblinR",
+                vx: 20
+        });
+            this.add('2d, aiBounce, animation');
+
+            this.on("bump.left",this, "right");
+            this.on("bump.right",this, "left");
+            this.on("bump.bottom, bump.top", function(collision) {
+                if(collision.obj.isA("Dana")) {
+                    collision.obj.destroy();
+                    //collision.obj.muerteAux();
+                }
+            }); 
+            this.on("bump.left, bump.right", function(collision) {
+                if(collision.obj.isA("Dana")) {
+                    collision.obj.destroy();
+                    //collision.obj.muerteAux();
+                }
+            });          
+        },
+        left: function(dt) {
+            //this.play("ataque_derecha");
+            this.play("izquierda");
+        },
+        right: function(dt) {
+            //this.play("ataque_izquierda");
+            this.play("derecha");
+        }
+    });
+
+
+
+
     // ANIMACIONES DE DANA
     Q.animations("animaciones_dana", {
         quieto_derecha: {frames: [12], loop: false},
@@ -294,15 +400,34 @@ window.addEventListener("load", function() {
         destruccion: {frames: [4, 5, 6], rate: 1/8, loop: false},
         rotura: {frames: [7, 8], rate: 1/8, loop: false}
     });
+    
+    Q.animations("animaciones_cabeza",{
+        izquierda: {frames: [0, 1, 2, 3],rate: 1/2.5, loop: true},
+        derecha: {frames: [4, 5, 6, 7], rate: 1/2.5, loop: true}
+        
+    });
+
+    Q.animations("animaciones_goblin",{
+        derecha: {frames: [0, 1, 2],rate: 1/2.5, loop: true},
+        izquierda: {frames: [3, 4, 5], rate: 1/2.5, loop: true},
+        ataque_derecha: {frames: [6, 7],rate: 1/2.5, loop: true},
+        ataque_izquierda: {frames: [8, 9], rate: 1/2.5, loop: true},
+        muerte_derecha: {frames: [10], loop: false},
+        muerte_izquierda: {frames: [11], loop: false}
+    });
 
     // CARGA Y COMPILADO DE ARCHIVOS
     Q.load(["dana.png", "dana.json",
             "bell.png", "keyP.png",
             "orange_block.png","orange_block_destroyed.png",
-            "block_interaction.png", "block_interaction.json"
+            "block_interaction.png", "block_interaction.json",
+            "enemy_head.png","enemy_head.json",
+            "enemy_goblin.png", "enemy_goblin.json"
         ], function() {
         Q.compileSheets("dana.png", "dana.json");
         Q.compileSheets("block_interaction.png", "block_interaction.json");
+        Q.compileSheets("enemy_head.png", "enemy_head.json");
+        Q.compileSheets("enemy_goblin.png", "enemy_goblin.json");
     });
 
 });
