@@ -28,9 +28,10 @@ window.addEventListener("load", function() {
         Q.stageTMX("level1.tmx", stage);
         stage.insert(new Q.Dana({x: (4 * tamXBloques), y: (8 * tamYBloques)}));
 
-        stage.insert(new Q.Key({x : 216, y : 113}));
+        //stage.insert(new Q.Key({x : 216, y : 113}));
+        //stage.insert(new Q.Key({x : 200, y : 113}));
         //stage.insert(new Q.Dana({x : 32, y : 32}));
-        stage.insert(new Q.Bloque({x : 70, y : 116}));
+        //stage.insert(new Q.Bloque({x : 70, y : 116}));
     });
 
      // Puntuación
@@ -61,8 +62,9 @@ window.addEventListener("load", function() {
                 block_time: 0,
                 x_action: 0,
                 y_action: 0,
+                iniciado: false,
                 muerto: false
-                //points: [  [ -8, -8 ], [  8, -8 ], [  -8,  8 ], [ -8,  8 ] ]//[  [ -7, -6 ], [  7, -6 ], [  -7,  8 ], [ -7,  8 ] ]
+                //points: [  [ -8, -8 ], [  8, -8 ], [  8,  8 ], [ -8,  8 ] ]//[  [ -7, -6 ], [  7, -6 ], [  7,  8 ], [ -7,  8 ] ]
             });
 
             this.add('2d, platformerControls, animation');
@@ -84,6 +86,16 @@ window.addEventListener("load", function() {
             relativeX = -1;
             relativeY = -1;
             direccion = "";
+
+            level = "level" + Q.state.get("level");
+            if(!this.iniciado) {
+                if(level == "levelundefined") {
+                    this.stage.insert(new Q.Key({x : 216, y : 113}));
+                    this.stage.insert(new Q.Key({x : 200, y : 113}));
+                    this.stage.insert(new Q.Bloque({x : 50, y : 116}));
+                }
+                this.iniciado = true;
+            }
 
             this.p.block_time -= dt;
             if(this.p.block_time >= 0) {
@@ -127,29 +139,59 @@ window.addEventListener("load", function() {
                     2 y 16 incluidos, es una posición válida. Para el eje Y se comprueba tan solo para
                     un valor mayor o igual que 2. El tope de altura da igual porque nunca se alcanza.
                     NOTA: los bloque se empiezan a contar por 1.
+                Después comprobamos si el objeto de la posición donde se va a poner el bloque es válido.
+                    Sólo es válido si es vacío o un bloque naranja. En cualquiera de estos casos, ponemos
+                    o quitamos un bloque según corresponda.
             */
             if(Q.inputs['action'] && this.p.block_time <= 0) {
+                //Evitamos que se el jugador se pueda mover mientras hace la animación
                 this.p.block_time = 0.15;
                 this.p.x_action = this.p.x;
                 this.p.y_action = this.p.y;
+
+                //Establecemos los puntos donde se pueden poner los bloques. Math.floor extrae el entero
                 if(direccion == "derecha") {
-                    relativeX = (this.p.x / 16) + 1;
-                    relativeY = this.p.y / 16;
+                    relativeX = Math.round((this.p.x / 16) + 1);
+                    relativeY = Math.round(this.p.y / 16);
                 }
                 else {
-                    relativeX = (this.p.x / 16) - 1;
-                    relativeY = this.p.y / 16;
+                    relativeX = Math.round((this.p.x / 16) - 1);
+                    relativeY = Math.round(this.p.y / 16);
                 }
+
+                //Reproducimos la animación correspondiente
                 if(Q.inputs['down'] && this.p.landed >= 0) {
-                    relativeY -= 1;
+                    relativeY += 1;
                     this.play("varita_agachado_" + direccion, 6);
                 }
                 else {
                     this.play("varita_" + direccion, 6);
                 }
 
+                //Comprobamos si el punto calculado se encuentra dentro de los límites
                 if((relativeX * 16 > 1 || relativeX * 16 < 17) && relativeY > 1) {
-                    console.log(this.stage.locate(relativeX * 16, relativeY * 16).p.asset);
+                    //console.log(this.stage.items[4].p.asset);
+                    console.log(this.stage.locate(relativeX * 16, relativeY * 16));
+                    if(direccion == "derecha") {
+                        //Comprobamos si el punto calculado es un objeto válido
+                        if(this.stage.locate(relativeX * 16, relativeY * 16) == false) {
+                            this.stage.insert(new Q.Bloque({x: relativeX * 16 + 8, y: relativeY * 16 - 8}));
+                            //this.play("creacion");
+                        }
+                        else if(this.stage.locate(relativeX * 16, relativeY * 16).p.asset == "orange_block.png" ||
+                                this.stage.locate(relativeX * 16, relativeY * 16).p.asset == "orange_block_destroyed.png") {
+                            this.stage.remove(this.stage.locate(relativeX * 16, relativeY * 16));
+                        }
+                    }
+                    else {
+                        if(this.stage.locate(relativeX * 16, relativeY * 16) == false) {
+                            this.stage.insert(new Q.Bloque({x: relativeX * 16 - 8, y: relativeY * 16 - 8}));
+                        }
+                        else if(this.stage.locate(relativeX * 16, relativeY * 16).p.asset == "orange_block.png" ||
+                                this.stage.locate(relativeX * 16, relativeY * 16).p.asset == "orange_block_destroyed.png") {
+                            this.stage.remove(this.stage.locate(relativeX * 16, relativeY * 16));
+                        }
+                    }
                 }
             }
             
@@ -189,16 +231,16 @@ window.addEventListener("load", function() {
         });
         this.add("tween");
         this.on("hit", this, "hit");
-    },
-    hit: function(collision){
-         if(collision.obj.isA("Dana") && !this.cogida){ 
-            //Q.state.inc('punct', 100);
-            this.cogida = true;
-            this.animate(
-                {y: this.p.y}, 0.3, Q.Easing.Linear, 
-                { callback: function(){ this.destroy() } });
+        },
+        hit: function(collision){
+            if(collision.obj.isA("Dana") && !this.cogida){ 
+                //Q.state.inc('punct', 100);
+                this.cogida = true;
+                this.animate(
+                    {y: this.p.y}, 0.3, Q.Easing.Linear, 
+                    { callback: function(){ this.destroy() } });
+            }
         }
-     }
 
     });
 
@@ -217,6 +259,7 @@ window.addEventListener("load", function() {
             if(collision.obj.isA("Dana")){ 
                 if(!this.roto) {
                     this.p.asset = "orange_block_destroyed.png";
+                    this.asset = "orange_block_destroyed.png";
                     this.roto = true;
                 }
                 else this.destroy();
@@ -224,9 +267,6 @@ window.addEventListener("load", function() {
         }
 
     });
-
-
-
 
     // ANIMACIONES DE DANA
     Q.animations("animaciones_dana", {
@@ -248,13 +288,21 @@ window.addEventListener("load", function() {
         muerte_izquierda: {frames: [11], loop: false, trigger: "muerte_t"}
     });
 
+    // ANIMACIONES DEL BLOQUE NARANJA
+    Q.animations("animaciones_bloque", {
+        creacion: {frames: [0, 1, 2, 3], rate: 1/8, loop: false},
+        destruccion: {frames: [4, 5, 6], rate: 1/8, loop: false},
+        rotura: {frames: [7, 8], rate: 1/8, loop: false}
+    });
 
     // CARGA Y COMPILADO DE ARCHIVOS
     Q.load(["dana.png", "dana.json",
             "bell.png", "keyP.png",
-            "orange_block.png","orange_block_destroyed.png"
+            "orange_block.png","orange_block_destroyed.png",
+            "block_interaction.png", "block_interaction.json"
         ], function() {
         Q.compileSheets("dana.png", "dana.json");
+        Q.compileSheets("block_interaction.png", "block_interaction.json");
     });
 
 });
