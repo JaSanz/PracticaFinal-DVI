@@ -32,11 +32,14 @@ window.addEventListener("load", function() {
         stage.insert(new Q.Dana({x: (4 * tamXBloques), y: (8 * tamYBloques)}));
 
         //stage.insert(new Q.Key({x : 216, y : 113}));
-        stage.insert(new Q.Key({x : 71, y : 100}));
+        stage.insert(new Q.Key({x : insAux(4), y : insAux(6)}));
         //stage.insert(new Q.Dana({x : 32, y : 32}));
-        stage.insert(new Q.Bloque({x : 70, y : 116}));
+        stage.insert(new Q.Bloque({x : insAux(10), y : insAux(6)}));
         //stage.insert(new Q.Head({x : 216, y : 113}));
         stage.insert(new Q.Goblin({x : 216, y : 113}));
+        stage.insert(new Q.Key({x : insAux(13), y : insAux(7)}));
+        stage.insert(new Q.Key({x : insAux(12), y : insAux(7)}));
+        stage.insert(new Q.Bloque({x : insAux(3), y : insAux(7)}));
         //stage.insert(new Q.Dana({x:2 * tamXBloques, y:10 * tamYBloques}));
     });
     // NIVEL 2
@@ -59,6 +62,33 @@ window.addEventListener("load", function() {
         //stage.insert(new Q.Dana({x:2 * tamXBloques, y:10 * tamYBloques}));
     });
 
+    /**
+     * Función auxiliar y de ayuda para poner bloques e items en una posición exacta.
+     * Recibe el bloque relativo (es decir, de 1 a 14 o de 1 a 17, según el eje).
+     * Devuelve las coordenadas exactas
+     * @param {int} xRel 
+     */
+    function insAux(xRel) {
+        return xRel * tamXBloques + 8;
+    }
+
+    /**
+     * Función para buscar manualmente en la lista de objetos del escenario un objeto concreto. Dados
+     * una x y una y, resultado de ser calculadas al pulsar el botón de acción, busca en los objetos
+     * del escenario el objeto en esas coordenadas y los devuelve.
+     * Devuelve el objeto en dichas coordenadas
+     * @param {int} xAprox 
+     * @param {int} yAprox 
+     */
+    function manualLocate(xAprox, yAprox, obj) {
+        for(i = 0; i < obj.stage.items.length; ++i) {
+            if(obj.stage.items[i].p.x == xAprox && obj.stage.items[i].p.y == yAprox) {
+                //console.log(obj.stage.items[i].p.asset);
+                return i;
+            }
+        }
+        return -1;
+    };
 
      // Puntuación
      Q.UI.Text.extend("Score", {
@@ -89,14 +119,13 @@ window.addEventListener("load", function() {
                 x_action: 0,
                 y_action: 0,
                 iniciado: false,
-                muerto: false
-                //points: [  [ -8, -8 ], [  8, -8 ], [  8,  8 ], [ -8,  8 ] ]//[  [ -7, -6 ], [  7, -6 ], [  7,  8 ], [ -7,  8 ] ]
+                muerto: false,
+                points: [  [ -7, -6 ], [  7, -6 ], [  7,  8 ], [ -7,  8 ] ] //[  [ -8, -8 ], [  8, -8 ], [  8,  8 ], [ -8,  8 ] ]//[  [ -7, -6 ], [  7, -6 ], [  7,  8 ], [ -7,  8 ] ]
             });
 
             this.add('2d, platformerControls, animation');
-            //this.play("quieto_derecha");
             
-            //this.on("muerte_t", this, "muerte");
+            this.on("muerte_t", this, "muerte");
 
             /*this.on("bump.bottom", function(collision) {
                 if(collision.obj.isA("Goomba") && !this.p.muerto) {
@@ -115,16 +144,6 @@ window.addEventListener("load", function() {
             relativeX = -1;
             relativeY = -1;
             direccion = "";
-
-            level = "level" + Q.state.get("level");
-            if(!this.iniciado) {
-                if(level == "levelundefined") {
-                    this.stage.insert(new Q.Key({x : 216, y : 113}));
-                    this.stage.insert(new Q.Key({x : 200, y : 113}));
-                    this.stage.insert(new Q.Bloque({x : 50, y : 116}));
-                }
-                this.iniciado = true;
-            }
 
             this.p.block_time -= dt;
             if(this.p.block_time >= 0) {
@@ -202,26 +221,26 @@ window.addEventListener("load", function() {
 
                 //Comprobamos si el punto calculado se encuentra dentro de los límites
                 if((relativeX * 16 > 1 || relativeX * 16 < 17) && relativeY > 1) {
-                    //console.log(this.stage.items[4].p.asset);
-                    console.log(this.stage.locate(relativeX * 16, relativeY * 16));
                     if(direccion == "derecha") {
                         //Comprobamos si el punto calculado es un objeto válido
-                        if(this.stage.locate(relativeX * 16, relativeY * 16) == false) {
+                        a = manualLocate(relativeX * 16 + 8, relativeY * 16 - 8, this);
+                        if(a == -1) {
                             this.stage.insert(new Q.Bloque({x: relativeX * 16 + 8, y: relativeY * 16 - 8}));
                             //this.play("creacion");
                         }
-                        else if(this.stage.locate(relativeX * 16, relativeY * 16).p.asset == "orange_block.png" ||
-                                this.stage.locate(relativeX * 16, relativeY * 16).p.asset == "orange_block_destroyed.png") {
-                            this.stage.remove(this.stage.locate(relativeX * 16, relativeY * 16));
+                        else if(a != -1 && (this.stage.items[a].p.asset == "orange_block.png" || 
+                                this.stage.items[a].p.asset == "orange_block_destroyed.png")) {
+                            this.stage.remove(this.stage.items[a]);
                         }
                     }
                     else {
-                        if(this.stage.locate(relativeX * 16, relativeY * 16) == false) {
+                        a = manualLocate(relativeX * 16 - 8, relativeY * 16 - 8, this);
+                        if(a == -1) {
                             this.stage.insert(new Q.Bloque({x: relativeX * 16 - 8, y: relativeY * 16 - 8}));
                         }
-                        else if(this.stage.locate(relativeX * 16, relativeY * 16).p.asset == "orange_block.png" ||
-                                this.stage.locate(relativeX * 16, relativeY * 16).p.asset == "orange_block_destroyed.png") {
-                            this.stage.remove(this.stage.locate(relativeX * 16, relativeY * 16));
+                        else if(a != -1 && (this.stage.items[a].p.asset == "orange_block.png" || 
+                                this.stage.items[a].p.asset == "orange_block_destroyed.png")) {
+                            this.stage.remove(this.stage.items[a]);
                         }
                     }
                 }
@@ -252,17 +271,17 @@ window.addEventListener("load", function() {
 
     });
 
-    // KEY
+    // LLAVE
     Q.Sprite.extend("Key", {
         init: function(p) {
             this._super(p, { 
-            asset: "keyP.png",
-            sensor: true,
-            cogida: false,
-            gravity: 0
-        });
-        this.add("tween");
-        this.on("hit", this, "hit");
+                asset: "keyP.png",
+                sensor: true,
+                cogida: false,
+                gravity: 0
+            });
+            this.add("tween");
+            this.on("hit", this, "hit");
         },
         hit: function(collision){
             if(collision.obj.isA("Dana") && !this.cogida){ 
@@ -276,7 +295,27 @@ window.addEventListener("load", function() {
 
     });
 
-    // Bloque
+    // PUERTA
+    /*Q.sprite.extend("Puerta", {
+        init: function(p) {
+            this._super(p, { 
+                sprite: "animaciones_puerta",
+                sheet: "doorClosed",
+                abierta: false
+            });
+
+            this.add("tween");
+            this.on("hit", this, "hit");
+        },
+        hit: function(collision){
+            if(collision.obj.isA("Dana") && this.abierta){ 
+                //Q.state.inc('punct', 100);
+                //Cargar siguiente nivel
+            }
+        }
+    });*/
+
+    // BLOQUE NARANJA
     Q.Sprite.extend("Bloque", {
         init: function(p) {
             this._super(p, { 
@@ -300,7 +339,7 @@ window.addEventListener("load", function() {
 
     });
 
-    // Cabeza
+    // CABEZA
     Q.Sprite.extend("Head", {
         init: function(p) {
             this._super(p, { 
@@ -336,7 +375,7 @@ window.addEventListener("load", function() {
         }
     });
 
-    // Goblin-Puños
+    // GOBLIN (SEÑOR PUÑOS)
     Q.Sprite.extend("Goblin", {
         init: function(p) {
             this._super(p, { 
@@ -400,13 +439,22 @@ window.addEventListener("load", function() {
         destruccion: {frames: [4, 5, 6], rate: 1/8, loop: false},
         rotura: {frames: [7, 8], rate: 1/8, loop: false}
     });
+
+    // ANIMACIONES DE LA PUERTA
+    Q.animations("animaciones_puerta", {
+        cerrada: {frames: [0], loop: false},
+        abriendose: {frames: [0, 1, 2], rate: 1/3, loop: false},
+        abierta: {frames: [2], loop: false}
+    });
     
+    // ANIMACIONES DEL ENEMIGO CABEZA
     Q.animations("animaciones_cabeza",{
         izquierda: {frames: [0, 1, 2, 3],rate: 1/2.5, loop: true},
         derecha: {frames: [4, 5, 6, 7], rate: 1/2.5, loop: true}
         
     });
 
+    // ANIMACIONES DEL ENEMIGO GOBLIN (SEÑOR PUÑOS)
     Q.animations("animaciones_goblin",{
         derecha: {frames: [0, 1, 2],rate: 1/2.5, loop: true},
         izquierda: {frames: [3, 4, 5], rate: 1/2.5, loop: true},
@@ -419,6 +467,7 @@ window.addEventListener("load", function() {
     // CARGA Y COMPILADO DE ARCHIVOS
     Q.load(["dana.png", "dana.json",
             "bell.png", "keyP.png",
+            "door.png", "door.json",
             "orange_block.png","orange_block_destroyed.png",
             "block_interaction.png", "block_interaction.json",
             "enemy_head.png","enemy_head.json",
@@ -426,6 +475,7 @@ window.addEventListener("load", function() {
         ], function() {
         Q.compileSheets("dana.png", "dana.json");
         Q.compileSheets("block_interaction.png", "block_interaction.json");
+        Q.compileSheets("door.png", "door.json");
         Q.compileSheets("enemy_head.png", "enemy_head.json");
         Q.compileSheets("enemy_goblin.png", "enemy_goblin.json");
     });
