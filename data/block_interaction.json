@@ -1,0 +1,5 @@
+{
+    "creation":{"sx":0,"sy":0,"tileW":16,"tileH":16,"frames":4},
+    "destruction":{"sx":64,"sy":0,"tileW":16,"tileH":16,"frames":3},
+    "break":{"sx":112,"sy":0,"tileW":16,"tileH":16,"frames":4}
+}
