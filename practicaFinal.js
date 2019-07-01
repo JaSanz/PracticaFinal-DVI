@@ -4,11 +4,13 @@
 //TODO mirar si se pueden disparar bolas de fuego estando agachado
 //TODO sprites de impulso salto y andar agachado
 //TODO animaciones de muerte
+//TODO puntuación. IMPORTANTE de cara a completar todo el código de los enemigos
 
 const tamXBloques = 16;
 const tamYBloques = 16;
 const xBloques = 17;
 const yBloques = 14;
+const numNiveles = 4;
 
 window.addEventListener("load", function() {
 
@@ -29,37 +31,80 @@ window.addEventListener("load", function() {
     // NIVEL 1
     Q.scene("level1", function(stage) {
         Q.stageTMX("level1.tmx", stage);
+        //Insertamos la llave
+        stage.insert(new Q.Key({x : insAux(13), y : insAux(7)}));
+        //Insertamos la puerta
+        stage.insert(new Q.Puerta({x : insAux(8), y : insAux(10)}));
+        //Insertamos la campana
+        //Insertamos los objetos
+        //Insertamos los bloques especiales
+        //Insertamos los bloques normales
+        stage.insert(new Q.Bloque({x : insAux(8), y : insAux(7)}));
+        stage.insert(new Q.Bloque({x : insAux(9), y : insAux(6)}));
+        stage.insert(new Q.Bloque({x : insAux(5), y : insAux(2)}));
+        stage.insert(new Q.Bloque({x : insAux(11), y : insAux(2)}));
+        //Insertamos los enemigos
+        stage.insert(new Q.Goblin({x : insAux(8), y : insAux(6)}));
+        //Insertamos a Dana
         stage.insert(new Q.Dana({x: (4 * tamXBloques), y: (8 * tamYBloques)}));
 
-        //stage.insert(new Q.Key({x : 216, y : 113}));
-        stage.insert(new Q.Key({x : insAux(4), y : insAux(6)}));
-        //stage.insert(new Q.Dana({x : 32, y : 32}));
-        stage.insert(new Q.Bloque({x : insAux(10), y : insAux(6)}));
-        //stage.insert(new Q.Head({x : 216, y : 113}));
-        stage.insert(new Q.Goblin({x : 216, y : 113}));
-        stage.insert(new Q.Key({x : insAux(13), y : insAux(7)}));
-        stage.insert(new Q.Key({x : insAux(12), y : insAux(7)}));
-        stage.insert(new Q.Bloque({x : insAux(3), y : insAux(7)}));
-        //stage.insert(new Q.Dana({x:2 * tamXBloques, y:10 * tamYBloques}));
+        Q.state.reset({level: 1});
     });
     // NIVEL 2
     Q.scene("level2", function(stage) {
         Q.stageTMX("level2.tmx", stage);
 
-        stage.insert(new Q.Head({x : 216, y : 113}));
-        //stage.insert(new Q.Dana({x:2 * tamXBloques, y:10 * tamYBloques}));
+        //stage.insert(new Q.Head({x : 216, y : 113}));
+        stage.insert(new Q.Dana({x:2 * tamXBloques, y:10 * tamYBloques}));
+        stage.insert(new Q.Key({x : insAux(13), y : insAux(7)}));
+        stage.insert(new Q.Puerta({x : insAux(8), y : insAux(10)}));
     });
     Q.scene("level3", function(stage) {
         Q.stageTMX("level3.tmx", stage);
 
-        stage.insert(new Q.Head({x : 216, y : 113}));
+        stage.insert(new Q.Dana({x:2 * tamXBloques, y:10 * tamYBloques}));
+        stage.insert(new Q.Key({x : insAux(9), y : insAux(7)}));
+        stage.insert(new Q.Puerta({x : insAux(8), y : insAux(10)}));
+        //stage.insert(new Q.Head({x : 216, y : 113}));
         //stage.insert(new Q.Dana({x:2 * tamXBloques, y:10 * tamYBloques}));
     });
     Q.scene("level4", function(stage) {
         Q.stageTMX("level4.tmx", stage);
 
-        stage.insert(new Q.Head({x : 216, y : 113}));
+        stage.insert(new Q.Dana({x:2 * tamXBloques, y:10 * tamYBloques}));
+        stage.insert(new Q.Key({x : insAux(13), y : insAux(7)}));
+        stage.insert(new Q.Puerta({x : insAux(8), y : insAux(10)}));
+        //stage.insert(new Q.Head({x : 216, y : 113}));
         //stage.insert(new Q.Dana({x:2 * tamXBloques, y:10 * tamYBloques}));
+    });
+
+    // PANTALLA DE FIN DE JUEGO
+    Q.scene('endGame',function(stage) {
+        var container = stage.insert(new Q.UI.Container({ x: Q.width/2, y: Q.height/2, fill: "rgba(0,0,0,0.5)"}));
+        if(/*Q.state.get("lives") == 0 || */Q.state.get("level") == numNiveles){
+            var button = container.insert(new Q.UI.Button({ x: 0, y: 0, fill: "#CCCCCC",label: "Play Again" }));         
+            var label = container.insert(new Q.UI.Text({x:0, y: -10 - button.p.h, label: stage.options.label }));
+        }
+        else {
+            var button = container.insert(new Q.UI.Button({ x: 0, y: 0, fill: "#CCCCCC",label: "Next Level" }));       
+            var label = container.insert(new Q.UI.Text({x:0, y: -10 - button.p.h, label: stage.options.label }));
+        }
+
+        button.on("click",function() {
+            Q.clearStages();
+            if (/*Q.state.get("lives") == 0 || */Q.state.get("level") > numNiveles){
+                Q.state.reset({lives : 3, level: 1});
+                Q.stageScene('level1');
+                //Q.stageScene("hud",1);
+            }
+            else{
+                level = "level" + Q.state.get("level");
+				Q.stageScene(level);
+				//Q.stageScene("hud",1);
+            }
+        });
+        
+        container.fit(20);
     });
 
     /**
@@ -89,6 +134,21 @@ window.addEventListener("load", function() {
         }
         return -1;
     };
+
+    /**
+     * Función para buscar un único tipo de objeto entre todos los que hay. Solo devuelve el primero
+     * que encuentra en la lista de objetos, pero lo devuelve completo
+     * @param {string} name 
+     */
+    function objectLocate(name, obj) {
+        for(i = 0; i < obj.stage.items.length; ++i) {
+            if(obj.stage.items[i].p.asset == name || obj.stage.items[i].p.sheet == name) {
+                //console.log(obj.stage.items[i].p.asset);
+                return obj.stage.items[i];
+            }
+        }
+        return null;
+    }
 
      // Puntuación
      Q.UI.Text.extend("Score", {
@@ -120,25 +180,13 @@ window.addEventListener("load", function() {
                 y_action: 0,
                 iniciado: false,
                 muerto: false,
-                points: [  [ -7, -6 ], [  7, -6 ], [  7,  8 ], [ -7,  8 ] ] //[  [ -8, -8 ], [  8, -8 ], [  8,  8 ], [ -8,  8 ] ]//[  [ -7, -6 ], [  7, -6 ], [  7,  8 ], [ -7,  8 ] ]
+                points: [  [ -7, -6 ], [  7, -6 ], [  7,  7 ], [ -7,  7 ] ]
             });
 
             this.add('2d, platformerControls, animation');
             
             this.on("muerte_t", this, "muerte");
-
-            /*this.on("bump.bottom", function(collision) {
-                if(collision.obj.isA("Goomba") && !this.p.muerto) {
-                    if(Q.inputs['up']) {
-                        this.p.vy = -500;
-                    }
-                    else {
-                        this.p.vy = -300;
-                    }
-                }
-            });*/
         },       
-    
 
         step: function(dt) {
             relativeX = -1;
@@ -196,7 +244,7 @@ window.addEventListener("load", function() {
             */
             if(Q.inputs['action'] && this.p.block_time <= 0) {
                 //Evitamos que se el jugador se pueda mover mientras hace la animación
-                this.p.block_time = 0.15;
+                this.p.block_time = 0.3;
                 this.p.x_action = this.p.x;
                 this.p.y_action = this.p.y;
 
@@ -249,12 +297,20 @@ window.addEventListener("load", function() {
         },
 
         muerteAux: function(p) {
-                if(!this.p.muerto) {
-                    this.p.muerto = true;
-                    //Q.state.dec("lives", 1);
-                    this.p.collisionMask = Q.SPRITE_NONE;
-                    this.play("muerte"); //Hacemos que desaparezca a los dos segundos para evitar situaciones no deseadas
-                }      
+            direccion;
+            if(this.p.direction == "right") {
+                direccion = "derecha";
+            }
+            else {
+                direccion = "izquierda";
+            }
+
+            if(!this.p.muerto) {
+                this.p.muerto = true;
+                //Q.state.dec("lives", 1);
+                this.p.collisionMask = Q.SPRITE_NONE;
+                this.play("muerte_" + direccion, 2); //Hacemos que desaparezca a los dos segundos para evitar situaciones no deseadas
+            }      
         },
         
         muerte: function(p) {
@@ -290,30 +346,42 @@ window.addEventListener("load", function() {
                 this.animate(
                     {y: this.p.y}, 0.3, Q.Easing.Linear, 
                     { callback: function(){ this.destroy() } });
+                //Abrimos la puerta
+                objectLocate("doorClosed", this).play("abriendose");
             }
         }
 
     });
 
     // PUERTA
-    /*Q.sprite.extend("Puerta", {
+    Q.Sprite.extend("Puerta", {
         init: function(p) {
             this._super(p, { 
                 sprite: "animaciones_puerta",
                 sheet: "doorClosed",
+                sensor: true,
                 abierta: false
             });
 
-            this.add("tween");
+            this.add("tween, animation");
             this.on("hit", this, "hit");
+            this.on("llave_t", this, "llave");
         },
         hit: function(collision){
-            if(collision.obj.isA("Dana") && this.abierta){ 
-                //Q.state.inc('punct', 100);
-                //Cargar siguiente nivel
+            if(this.p.abierta) {
+                if(collision.obj.isA("Dana")) {
+                    collision.obj.destroy();
+                    this.destroy();
+                    Q.stageScene("endGame",1,{label: "LEVEL " + Q.state.get("level") + " WON!"});
+                    Q.state.inc("level", 1);
+                }
             }
+            
+        },
+        llave: function(dt) {
+            this.p.abierta = true;
         }
-    });*/
+    });
 
     // BLOQUE NARANJA
     Q.Sprite.extend("Bloque", {
@@ -337,6 +405,17 @@ window.addEventListener("load", function() {
             }
         }
 
+    });
+
+    Q.Sprite.extend("Hada", {
+        init: function(p) {
+            this._super(p, { 
+                sprite: "animaciones_cabeza",
+                sheet: "cabezaL",
+                vx: 20
+            });
+        this.add('2d, animation');
+        }
     });
 
     // CABEZA
@@ -381,7 +460,8 @@ window.addEventListener("load", function() {
             this._super(p, { 
                 sprite: "animaciones_goblin",
                 sheet: "goblinR",
-                vx: 20
+                vx: 15,
+                points: [  [ -6, -6 ], [  5, -6 ], [  5,  8 ], [ -6,  8 ] ]
         });
             this.add('2d, aiBounce, animation');
 
@@ -389,14 +469,14 @@ window.addEventListener("load", function() {
             this.on("bump.right",this, "left");
             this.on("bump.bottom, bump.top", function(collision) {
                 if(collision.obj.isA("Dana")) {
-                    collision.obj.destroy();
-                    //collision.obj.muerteAux();
+                    //collision.obj.destroy();
+                    collision.obj.muerteAux();
                 }
             }); 
             this.on("bump.left, bump.right", function(collision) {
                 if(collision.obj.isA("Dana")) {
-                    collision.obj.destroy();
-                    //collision.obj.muerteAux();
+                    //collision.obj.destroy();
+                    collision.obj.muerteAux();
                 }
             });          
         },
@@ -425,12 +505,12 @@ window.addEventListener("load", function() {
         saltando_quieto_izquierda: {frames: [0], loop: false},
         saltando_corriendo_derecha: {frames: [14], loop: false},
         saltando_corriendo_izquierda: {frames: [2], loop: false},
-        varita_derecha: {frames: [18, 19], rate: 1/10, loop: false},
-        varita_izquierda: {frames: [6, 7], rate: 1/10, loop: false},
+        varita_derecha: {frames: [18, 19], rate: 1/6, loop: false},
+        varita_izquierda: {frames: [6, 7], rate: 1/6, loop: false},
         varita_agachado_derecha: {frames: [20, 21, 22], rate: 1/7, loop: false},
         varita_agachado_izquierda: {frames: [8, 9, 10], rate: 1/7, loop: false},
         muerte_derecha: {frames: [23], loop: false, trigger: "muerte_t"},
-        muerte_izquierda: {frames: [11], loop: false, trigger: "muerte_t"}
+        muerte_izquierda: {frames: [11], rate: 1, loop: false, trigger: "muerte_t"}
     });
 
     // ANIMACIONES DEL BLOQUE NARANJA
@@ -443,7 +523,7 @@ window.addEventListener("load", function() {
     // ANIMACIONES DE LA PUERTA
     Q.animations("animaciones_puerta", {
         cerrada: {frames: [0], loop: false},
-        abriendose: {frames: [0, 1, 2], rate: 1/3, loop: false},
+        abriendose: {frames: [0, 1, 2], rate: 1/3, loop: false, trigger: "llave_t"},
         abierta: {frames: [2], loop: false}
     });
     
