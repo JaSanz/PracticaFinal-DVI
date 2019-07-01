@@ -21,7 +21,8 @@ window.addEventListener("load", function() {
     .touch();                            // Add in touch support (for the UI)
 
     // CARGA
-    Q.loadTMX("level1.tmx, level2.tmx, level3.tmx, level4.tmx", function() {
+    Q.loadTMX("level1.tmx", function() {
+        Q.clearStages();
         Q.stageScene("level1");
         //Q.stageScene("level2");
         //Q.stageScene("level3");
@@ -30,26 +31,144 @@ window.addEventListener("load", function() {
 
     // NIVEL 1
     Q.scene("level1", function(stage) {
+        Q.state.reset();
         Q.stageTMX("level1.tmx", stage);
+        //Insertamos los bloques grises
+        {stage.insert(new Q.Pared({x : insAux(1), y : insAux(1)}));
+        stage.insert(new Q.Pared({x : insAux(2), y : insAux(1)}));
+        stage.insert(new Q.Pared({x : insAux(3), y : insAux(1)}));
+        stage.insert(new Q.Pared({x : insAux(4), y : insAux(1)}));
+        stage.insert(new Q.Pared({x : insAux(5), y : insAux(1)}));
+        stage.insert(new Q.Pared({x : insAux(6), y : insAux(1)}));
+        stage.insert(new Q.Pared({x : insAux(7), y : insAux(1)}));
+        stage.insert(new Q.Pared({x : insAux(8), y : insAux(1)}));
+        stage.insert(new Q.Pared({x : insAux(9), y : insAux(1)}));
+        stage.insert(new Q.Pared({x : insAux(10), y : insAux(1)}));
+        stage.insert(new Q.Pared({x : insAux(11), y : insAux(1)}));
+        stage.insert(new Q.Pared({x : insAux(12), y : insAux(1)}));
+        stage.insert(new Q.Pared({x : insAux(13), y : insAux(1)}));
+        stage.insert(new Q.Pared({x : insAux(14), y : insAux(1)}));
+        stage.insert(new Q.Pared({x : insAux(15), y : insAux(1)}));
+        stage.insert(new Q.Pared({x : insAux(1), y : insAux(2)}));
+        stage.insert(new Q.Pared({x : insAux(2), y : insAux(2)}));
+        stage.insert(new Q.Pared({x : insAux(3), y : insAux(2)}));
+        stage.insert(new Q.Pared({x : insAux(4), y : insAux(2)}));
+        stage.insert(new Q.Pared({x : insAux(5), y : insAux(2)}));
+        stage.insert(new Q.Pared({x : insAux(11), y : insAux(2)}));
+        stage.insert(new Q.Pared({x : insAux(12), y : insAux(2)}));
+        stage.insert(new Q.Pared({x : insAux(13), y : insAux(2)}));
+        stage.insert(new Q.Pared({x : insAux(14), y : insAux(2)}));
+        stage.insert(new Q.Pared({x : insAux(15), y : insAux(2)}));
+        stage.insert(new Q.Pared({x : insAux(1), y : insAux(3)}));
+        stage.insert(new Q.Pared({x : insAux(2), y : insAux(3)}));
+        stage.insert(new Q.Pared({x : insAux(3), y : insAux(3)}));
+        stage.insert(new Q.Pared({x : insAux(4), y : insAux(3)}));
+        stage.insert(new Q.Pared({x : insAux(12), y : insAux(3)}));
+        stage.insert(new Q.Pared({x : insAux(13), y : insAux(3)}));
+        stage.insert(new Q.Pared({x : insAux(14), y : insAux(3)}));
+        stage.insert(new Q.Pared({x : insAux(15), y : insAux(3)}));
+        stage.insert(new Q.Pared({x : insAux(1), y : insAux(4)}));
+        stage.insert(new Q.Pared({x : insAux(2), y : insAux(4)}));
+        stage.insert(new Q.Pared({x : insAux(3), y : insAux(4)}));
+        stage.insert(new Q.Pared({x : insAux(4), y : insAux(4)}));
+        stage.insert(new Q.Pared({x : insAux(12), y : insAux(4)}));
+        stage.insert(new Q.Pared({x : insAux(13), y : insAux(4)}));
+        stage.insert(new Q.Pared({x : insAux(14), y : insAux(4)}));
+        stage.insert(new Q.Pared({x : insAux(15), y : insAux(4)}));
+        stage.insert(new Q.Pared({x : insAux(1), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(2), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(3), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(4), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(5), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(11), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(12), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(13), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(14), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(15), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(1), y : insAux(6)}));
+        stage.insert(new Q.Pared({x : insAux(5), y : insAux(6)}));
+        stage.insert(new Q.Pared({x : insAux(6), y : insAux(6)}));
+        stage.insert(new Q.Pared({x : insAux(7), y : insAux(6)}));
+        stage.insert(new Q.Pared({x : insAux(10), y : insAux(6)}));
+        stage.insert(new Q.Pared({x : insAux(11), y : insAux(6)}));
+        stage.insert(new Q.Pared({x : insAux(15), y : insAux(6)}));
+        stage.insert(new Q.Pared({x : insAux(1), y : insAux(7)}));
+        stage.insert(new Q.Pared({x : insAux(15), y : insAux(7)}));
+        stage.insert(new Q.Pared({x : insAux(1), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(5), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(6), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(7), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(8), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(9), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(10), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(11), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(15), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(1), y : insAux(9)}));
+        stage.insert(new Q.Pared({x : insAux(2), y : insAux(9)}));
+        stage.insert(new Q.Pared({x : insAux(3), y : insAux(9)}));
+        stage.insert(new Q.Pared({x : insAux(4), y : insAux(9)}));
+        stage.insert(new Q.Pared({x : insAux(5), y : insAux(9)}));
+        stage.insert(new Q.Pared({x : insAux(6), y : insAux(9)}));
+        stage.insert(new Q.Pared({x : insAux(10), y : insAux(9)}));
+        stage.insert(new Q.Pared({x : insAux(11), y : insAux(9)}));
+        stage.insert(new Q.Pared({x : insAux(13), y : insAux(9)}));
+        stage.insert(new Q.Pared({x : insAux(14), y : insAux(9)}));
+        stage.insert(new Q.Pared({x : insAux(15), y : insAux(9)}));
+        stage.insert(new Q.Pared({x : insAux(1), y : insAux(10)}));
+        stage.insert(new Q.Pared({x : insAux(2), y : insAux(10)}));
+        stage.insert(new Q.Pared({x : insAux(3), y : insAux(10)}));
+        stage.insert(new Q.Pared({x : insAux(6), y : insAux(10)}));
+        stage.insert(new Q.Pared({x : insAux(10), y : insAux(10)}));
+        stage.insert(new Q.Pared({x : insAux(13), y : insAux(10)}));
+        stage.insert(new Q.Pared({x : insAux(14), y : insAux(10)}));
+        stage.insert(new Q.Pared({x : insAux(15), y : insAux(10)}));
+        stage.insert(new Q.Pared({x : insAux(1), y : insAux(11)}));
+        stage.insert(new Q.Pared({x : insAux(2), y : insAux(11)}));
+        stage.insert(new Q.Pared({x : insAux(3), y : insAux(11)}));
+        stage.insert(new Q.Pared({x : insAux(4), y : insAux(11)}));
+        stage.insert(new Q.Pared({x : insAux(12), y : insAux(11)}));
+        stage.insert(new Q.Pared({x : insAux(13), y : insAux(11)}));
+        stage.insert(new Q.Pared({x : insAux(14), y : insAux(11)}));
+        stage.insert(new Q.Pared({x : insAux(15), y : insAux(11)}));
+        stage.insert(new Q.Pared({x : insAux(1), y : insAux(12)}));
+        stage.insert(new Q.Pared({x : insAux(2), y : insAux(12)}));
+        stage.insert(new Q.Pared({x : insAux(3), y : insAux(12)}));
+        stage.insert(new Q.Pared({x : insAux(4), y : insAux(12)}));
+        stage.insert(new Q.Pared({x : insAux(5), y : insAux(12)}));
+        stage.insert(new Q.Pared({x : insAux(6), y : insAux(12)}));
+        stage.insert(new Q.Pared({x : insAux(7), y : insAux(12)}));
+        stage.insert(new Q.Pared({x : insAux(8), y : insAux(12)}));
+        stage.insert(new Q.Pared({x : insAux(9), y : insAux(12)}));
+        stage.insert(new Q.Pared({x : insAux(10), y : insAux(12)}));
+        stage.insert(new Q.Pared({x : insAux(11), y : insAux(12)}));
+        stage.insert(new Q.Pared({x : insAux(12), y : insAux(12)}));
+        stage.insert(new Q.Pared({x : insAux(13), y : insAux(12)}));
+        stage.insert(new Q.Pared({x : insAux(14), y : insAux(12)}));
+        stage.insert(new Q.Pared({x : insAux(15), y : insAux(12)}));}
+        //Insertamos la puerta
+        //stage.insert(new Q.Puerta({x : insAux(8), y : insAux(10)}));
         //Insertamos la llave
         stage.insert(new Q.Key({x : insAux(13), y : insAux(7)}));
-        //Insertamos la puerta
-        stage.insert(new Q.Puerta({x : insAux(8), y : insAux(10)}));
         //Insertamos la campana
         //Insertamos los objetos
         //Insertamos los bloques especiales
         //Insertamos los bloques normales
-       // stage.insert(new Q.Bloque({x : insAux(8), y : insAux(7)}));
+        stage.insert(new Q.Bloque({x : insAux(8), y : insAux(7)}));
         //stage.insert(new Q.Bloque({x : insAux(9), y : insAux(6)}));
-        //stage.insert(new Q.Bloque({x : insAux(5), y : insAux(2)}));
-        //stage.insert(new Q.Bloque({x : insAux(11), y : insAux(2)}));
+        stage.insert(new Q.Bloque({x : insAux(5), y : insAux(3)}));
+        stage.insert(new Q.Bloque({x : insAux(11), y : insAux(3)}));
+        //PRUEBAS DE GOBLIN
+        stage.insert(new Q.Bloque({x : insAux(8), y : insAux(5)}));
+        stage.insert(new Q.Bloque({x : insAux(9), y : insAux(5)}));
+        stage.insert(new Q.Goblin({x : insAux(8), y : insAux(4)}))
         //Insertamos los enemigos
-        stage.insert(new Q.Goblin({x : insAux(8), y : insAux(7)}));
+        //stage.insert(new Q.Goblin({x : insAux(8), y : insAux(6)}));
         //stage.insert(new Q.Head({x : insAux(8), y : insAux(6)}));
         //Insertamos a Dana
-        stage.insert(new Q.Dana({x: (4 * tamXBloques), y: (8 * tamYBloques)}));
+        stage.insert(new Q.Dana({x: insAux(4), y: insAux(8)}));
+        stage.insert(new Q.Puerta({x : insAux(8), y : insAux(10)}));
 
-        Q.state.reset({level: 1});
+        //Q.state.reset({level: 1});
     });
     // NIVEL 2
     Q.scene("level2", function(stage) {
@@ -180,8 +299,8 @@ window.addEventListener("load", function() {
                 x_action: 0,
                 y_action: 0,
                 iniciado: false,
-                muerto: false
-                //points: [  [ -7, -6 ], [  7, -6 ], [  7,  7 ], [ -7,  7 ] ]
+                muerto: false,
+                points: [  [ -7, -6 ], [  7, -6 ], [  7,  7 ], [ -7,  7 ] ]
             });
 
             this.add('2d, platformerControls, animation');
@@ -269,7 +388,7 @@ window.addEventListener("load", function() {
                 }
 
                 //Comprobamos si el punto calculado se encuentra dentro de los límites
-                if((relativeX * 16 > 1 || relativeX * 16 < 17) && relativeY > 1) {
+                if((relativeX > 1 || relativeX < 17) && relativeY > 1) {
                     if(direccion == "derecha") {
                         //Comprobamos si el punto calculado es un objeto válido
                         a = manualLocate(relativeX * 16 + 8, relativeY * 16 - 8, this);
@@ -360,6 +479,8 @@ window.addEventListener("load", function() {
             this._super(p, { 
                 sprite: "animaciones_puerta",
                 sheet: "doorClosed",
+                w: 16,
+                h:16,
                 sensor: true,
                 abierta: false
             });
@@ -381,6 +502,17 @@ window.addEventListener("load", function() {
         },
         llave: function(dt) {
             this.p.abierta = true;
+        }
+    });
+
+    // BLOQUE GRIS (PARED)
+    Q.Sprite.extend("Pared", {
+        init: function(p) {
+            this._super(p, { 
+            asset: "grey_block.png",
+            gravity: 0
+        });
+        this.add("2d");
         }
     });
 
@@ -413,6 +545,8 @@ window.addEventListener("load", function() {
             this._super(p, { 
                 sprite: "animaciones_cabeza",
                 sheet: "cabezaL",
+                w: 16,
+                h:16,
                 vx: 20
             });
         this.add('2d, animation');
@@ -425,6 +559,8 @@ window.addEventListener("load", function() {
             this._super(p, { 
                 sprite: "animaciones_cabeza",
                 sheet: "cabezaL",
+                w: 16,
+                h:16,
                 vx: 20,
                 live_time: 17,
                 movimiento: "izquierda"
@@ -464,6 +600,8 @@ window.addEventListener("load", function() {
             this._super(p, { 
                 sprite: "animaciones_goblin",
                 sheet: "goblinR",
+                w: 16,
+                h:16,
                 vx: 15,
                 movimiento: "derecha",
                 points: [  [ -6, -6 ], [  5, -6 ], [  5,  8 ], [ -6,  8 ] ]
@@ -486,26 +624,24 @@ window.addEventListener("load", function() {
         },
         step: function(dt) {
             if(this.p.movimiento == "derecha") {
-               var relativeX = Math.round((this.p.x / 16) + 1);
-                var relativeY = Math.round((this.p.y / 16) + 1);
+                var relativeX = Math.floor((this.p.x / 16));
+                var relativeY = Math.floor((this.p.y / 16) + 1);
             }
             else {
-                var relativeX = Math.round((this.p.x / 16) - 1);
-                var relativeY = Math.round((this.p.y / 16) + 1);
+                var relativeX = Math.floor((this.p.x / 16));
+                var relativeY = Math.floor((this.p.y / 16) + 1);
             }
-            if((relativeX * 16 > 1 || relativeX * 16 < 17) && relativeY > 1) {
+            if((relativeX > 1 || relativeX < 17) && relativeY > 1) {
                 if(this.p.movimiento == "derecha") {
-                    var a = manualLocate(relativeX * 16 + 8, relativeY * 16 - 8, this);
+                    var a = manualLocate(relativeX * 16 + 8, relativeY * 16 + 8, this);
                     if(a == -1) {
                         this.p.vx = (-1)*this.p.vx;
-                        this.p.movimiento = "izquierda";
                     }// darse la vuelta
                 }
                  else {
-                    var a = manualLocate(relativeX * 16 - 8, relativeY * 16 - 8, this);
+                    var a = manualLocate(relativeX * 16 + 8, relativeY * 16 + 8, this);
                      if(a == -1) {
                         this.p.vx = (-1)*this.p.vx;
-                        this.p.movimiento = "derecha";
                      } // darse la vuelta                    
                  }
            }
@@ -583,12 +719,13 @@ window.addEventListener("load", function() {
             "bell.png", "keyP.png",
             "door.png", "door.json",
             "orange_block.png","orange_block_destroyed.png",
-            "block_interaction.png", "block_interaction.json",
+            //"block_interaction.png", "block_interaction.json",
+            "grey_block.png",
             "enemy_head.png","enemy_head.json",
             "enemy_goblin.png", "enemy_goblin.json"
         ], function() {
         Q.compileSheets("dana.png", "dana.json");
-        Q.compileSheets("block_interaction.png", "block_interaction.json");
+        //Q.compileSheets("block_interaction.png", "block_interaction.json");
         Q.compileSheets("door.png", "door.json");
         Q.compileSheets("enemy_head.png", "enemy_head.json");
         Q.compileSheets("enemy_goblin.png", "enemy_goblin.json");
