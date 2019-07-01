@@ -44,8 +44,8 @@ window.addEventListener("load", function() {
         //stage.insert(new Q.Bloque({x : insAux(5), y : insAux(2)}));
         //stage.insert(new Q.Bloque({x : insAux(11), y : insAux(2)}));
         //Insertamos los enemigos
-        //stage.insert(new Q.Goblin({x : insAux(8), y : insAux(6)}));
-        stage.insert(new Q.Head({x : insAux(8), y : insAux(6)}));
+        stage.insert(new Q.Goblin({x : insAux(8), y : insAux(7)}));
+        //stage.insert(new Q.Head({x : insAux(8), y : insAux(6)}));
         //Insertamos a Dana
         stage.insert(new Q.Dana({x: (4 * tamXBloques), y: (8 * tamYBloques)}));
 
@@ -469,7 +469,7 @@ window.addEventListener("load", function() {
                 points: [  [ -6, -6 ], [  5, -6 ], [  5,  8 ], [ -6,  8 ] ]
         });
             this.add('2d,tween, aiBounce, animation');
-
+            this.on("muerte_t", this, "muerte");
             this.on("bump.bottom, bump.top", function(collision) {
                 if(collision.obj.isA("Dana")) {
                     collision.obj.muerteAux();
@@ -485,9 +485,42 @@ window.addEventListener("load", function() {
             });          
         },
         step: function(dt) {
-            if (this.p.vx < 0) this.p.movimiento  = "izquierda";
-            else this.p.movimiento = "derecha";
-            this.play(this.p.movimiento);
+            if(this.p.movimiento == "derecha") {
+               var relativeX = Math.round((this.p.x / 16) + 1);
+                var relativeY = Math.round((this.p.y / 16) + 1);
+            }
+            else {
+                var relativeX = Math.round((this.p.x / 16) - 1);
+                var relativeY = Math.round((this.p.y / 16) + 1);
+            }
+            if((relativeX * 16 > 1 || relativeX * 16 < 17) && relativeY > 1) {
+                if(this.p.movimiento == "derecha") {
+                    var a = manualLocate(relativeX * 16 + 8, relativeY * 16 - 8, this);
+                    if(a == -1) {
+                        this.p.vx = (-1)*this.p.vx;
+                        this.p.movimiento = "izquierda";
+                    }// darse la vuelta
+                }
+                 else {
+                    var a = manualLocate(relativeX * 16 - 8, relativeY * 16 - 8, this);
+                     if(a == -1) {
+                        this.p.vx = (-1)*this.p.vx;
+                        this.p.movimiento = "derecha";
+                     } // darse la vuelta                    
+                 }
+           }
+
+            if (this.p.vy > 0) {// está cayendo
+                this.play("muerte_"+this.p.movimiento ,2);
+            }
+            else{
+                if (this.p.vx < 0) this.p.movimiento  = "izquierda";
+                else this.p.movimiento = "derecha";
+                this.play(this.p.movimiento);
+            }
+        },
+        muerte: function(dt) {
+            this.destroy();
         }
     });
 
@@ -541,8 +574,8 @@ window.addEventListener("load", function() {
         izquierda: {frames: [3, 4, 5], rate: 1/2.5, loop: true},
         ataque_derecha: {frames: [6, 7],rate: 1/2.5, loop: true},
         ataque_izquierda: {frames: [8, 9], rate: 1/2.5, loop: true},
-        muerte_derecha: {frames: [10], loop: false},
-        muerte_izquierda: {frames: [11], loop: false}
+        muerte_derecha: {frames: [10], loop: false, trigger: "muerte_t"},
+        muerte_izquierda: {frames: [11], loop: false, trigger: "muerte_t"}
     });
 
     // CARGA Y COMPILADO DE ARCHIVOS
