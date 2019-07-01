@@ -186,7 +186,6 @@ window.addEventListener("load", function() {
                 if((relativeX * 16 > 1 || relativeX * 16 < 17) && relativeY > 1) {
                     if (this.stage.locate(relativeX * 16, relativeY * 16) == false){ // no hay nada y se crea un bloque
                         this.stage.insert(new Q.Bloque({x:this.p.x + 16, y:this.p.y}));
-
                     }
                     else
                         console.log(this.stage.locate(relativeX * 16, relativeY * 16).p.asset);
@@ -307,9 +306,10 @@ window.addEventListener("load", function() {
             this._super(p, { 
                 sprite: "animaciones_goblin",
                 sheet: "goblinR",
+                sensor: true,
                 vx: 20
         });
-            this.add('2d, aiBounce, animation');
+            this.add('2d,tween, aiBounce, animation');
 
             this.on("bump.left",this, "right");
             this.on("bump.right",this, "left");
@@ -321,7 +321,19 @@ window.addEventListener("load", function() {
             }); 
             this.on("bump.left, bump.right", function(collision) {
                 if(collision.obj.isA("Dana")) {
-                    collision.obj.destroy();
+
+                    //if((relativeX * 16 > 1 || relativeX * 16 < 17) && relativeY > 1) {
+                       // if (this.stage.locate(relativeX * 16, relativeY * 16) != false){ // no hay nada y se crea un bloque
+                            this.play("ataque_izquierda");
+                            //collision.obj.destroy();
+                            this.animate(
+                                {y: this.p.y}, 0.3, Q.Easing.Linear, 
+                                { callback: function(){ collision.obj.destroy() } });
+                       // }
+                       // else
+                        //    console.log(this.stage.locate(relativeX * 16, relativeY * 16).p.asset);
+                   // }
+                    //collision.obj.destroy();
                     //collision.obj.muerteAux();
                 }
             });          
