@@ -1,10 +1,8 @@
 //TODO mirar el tema del audio
-//TODO mirar el json. NPI de cómo hacerlo bien
-//TODO ajustar velocidad de animaciones de Dana. Comprobar con gameplays
 //TODO mirar si se pueden disparar bolas de fuego estando agachado
 //TODO sprites de impulso salto y andar agachado
-//TODO animaciones de muerte
 //TODO puntuación. IMPORTANTE de cara a completar todo el código de los enemigos
+//TODO la muerte no funciona
 
 const tamXBloques = 16;
 const tamYBloques = 16;
@@ -21,18 +19,19 @@ window.addEventListener("load", function() {
     .touch();                            // Add in touch support (for the UI)
 
     // CARGA
-    Q.loadTMX("level1.tmx", function() {
+    Q.loadTMX("level1.tmx, level2.tmx, level3.tmx, level4.tmx", function() {
         Q.clearStages();
-        Q.stageScene("level1");
+        //Q.stageScene("level1");
         //Q.stageScene("level2");
         //Q.stageScene("level3");
-        //Q.stageScene("level4");
+        Q.stageScene("level4");
     });
 
     // NIVEL 1
     Q.scene("level1", function(stage) {
-        Q.state.reset();
+        Q.state.reset({level: 1});
         Q.stageTMX("level1.tmx", stage);
+
         //Insertamos los bloques grises
         {stage.insert(new Q.Pared({x : insAux(1), y : insAux(1)}));
         stage.insert(new Q.Pared({x : insAux(2), y : insAux(1)}));
@@ -146,56 +145,219 @@ window.addEventListener("load", function() {
         stage.insert(new Q.Pared({x : insAux(14), y : insAux(12)}));
         stage.insert(new Q.Pared({x : insAux(15), y : insAux(12)}));}
         //Insertamos la puerta
+        stage.insert(new Q.Puerta({x : insAux(8), y : insAux(10)}));
         //stage.insert(new Q.Puerta({x : insAux(8), y : insAux(10)}));
         //Insertamos la llave
         stage.insert(new Q.Key({x : insAux(13), y : insAux(7)}));
         //Insertamos la campana
+        stage.insert(new Q.Campana({x : insAux(8), y : insAux(2)}));
         //Insertamos los objetos
         //Insertamos los bloques especiales
         //Insertamos los bloques normales
-        stage.insert(new Q.Bloque({x : insAux(8), y : insAux(7)}));
-        //stage.insert(new Q.Bloque({x : insAux(9), y : insAux(6)}));
+        {stage.insert(new Q.Bloque({x : insAux(8), y : insAux(7)}));
+        stage.insert(new Q.Bloque({x : insAux(9), y : insAux(6)}));
         stage.insert(new Q.Bloque({x : insAux(5), y : insAux(3)}));
-        stage.insert(new Q.Bloque({x : insAux(11), y : insAux(3)}));
-        //PRUEBAS DE GOBLIN
-        stage.insert(new Q.Bloque({x : insAux(8), y : insAux(5)}));
-        stage.insert(new Q.Bloque({x : insAux(9), y : insAux(5)}));
-        stage.insert(new Q.Goblin({x : insAux(8), y : insAux(4)}))
+        stage.insert(new Q.Bloque({x : insAux(11), y : insAux(3)}));}
         //Insertamos los enemigos
         //stage.insert(new Q.Goblin({x : insAux(8), y : insAux(6)}));
-        //stage.insert(new Q.Head({x : insAux(8), y : insAux(6)}));
         //Insertamos a Dana
-        stage.insert(new Q.Dana({x: insAux(4), y: insAux(8)}));
-        stage.insert(new Q.Puerta({x : insAux(8), y : insAux(10)}));
+        stage.insert(new Q.Dana({x: insAux(3), y: insAux(8)}));
 
-        //Q.state.reset({level: 1});
     });
+
     // NIVEL 2
     Q.scene("level2", function(stage) {
         Q.stageTMX("level2.tmx", stage);
-
-        //stage.insert(new Q.Head({x : 216, y : 113}));
-        stage.insert(new Q.Dana({x:2 * tamXBloques, y:10 * tamYBloques}));
-        stage.insert(new Q.Key({x : insAux(13), y : insAux(7)}));
-        stage.insert(new Q.Puerta({x : insAux(8), y : insAux(10)}));
+        //Insertamos los bloques grises
+        {stage.insert(new Q.Pared({x : insAux(2), y : insAux(4)}));
+        stage.insert(new Q.Pared({x : insAux(3), y : insAux(4)}));
+        stage.insert(new Q.Pared({x : insAux(4), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(5), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(6), y : insAux(6)}));
+        stage.insert(new Q.Pared({x : insAux(7), y : insAux(6)}));
+        stage.insert(new Q.Pared({x : insAux(9), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(10), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(11), y : insAux(9)}));
+        stage.insert(new Q.Pared({x : insAux(12), y : insAux(9)}));
+        stage.insert(new Q.Pared({x : insAux(13), y : insAux(10)}));
+        stage.insert(new Q.Pared({x : insAux(14), y : insAux(10)}));}
+        //Insertamos la puerta
+        stage.insert(new Q.Puerta({x : insAux(14), y : insAux(9)}));
+        //Insertamos la llave
+        stage.insert(new Q.Key({x : insAux(14), y : insAux(3)}));
+        //Insertamos la campana
+        stage.insert(new Q.Campana({x : insAux(8), y : insAux(3)}));
+        //Insertamos los objetos
+        //Insertamos los bloques especiales
+        //Insertamos los bloques normales
+        {stage.insert(new Q.Bloque({x : insAux(10), y : insAux(6)}));
+        stage.insert(new Q.Bloque({x : insAux(11), y : insAux(5)}));
+        stage.insert(new Q.Bloque({x : insAux(12), y : insAux(5)}));
+        stage.insert(new Q.Bloque({x : insAux(13), y : insAux(4)}));
+        stage.insert(new Q.Bloque({x : insAux(14), y : insAux(4)}));
+        stage.insert(new Q.Bloque({x : insAux(2), y : insAux(10)}));
+        stage.insert(new Q.Bloque({x : insAux(3), y : insAux(10)}));
+        stage.insert(new Q.Bloque({x : insAux(4), y : insAux(9)}));
+        stage.insert(new Q.Bloque({x : insAux(5), y : insAux(9)}));
+        stage.insert(new Q.Bloque({x : insAux(6), y : insAux(9)}));
+        stage.insert(new Q.Bloque({x : insAux(7), y : insAux(9)}));
+        stage.insert(new Q.Bloque({x : insAux(8), y : insAux(9)}));
+        stage.insert(new Q.Bloque({x : insAux(9), y : insAux(9)}));
+        stage.insert(new Q.Bloque({x : insAux(10), y : insAux(9)}));
+        stage.insert(new Q.Bloque({x : insAux(7), y : insAux(8)}));
+        stage.insert(new Q.Bloque({x : insAux(8), y : insAux(8)}));}
+        //Insertamos los enemigos
+        stage.insert(new Q.Calavera_spawner({x : insAux(2), y : insAux(2)}));
+        stage.insert(new Q.Calavera_spawner({x : insAux(4), y : insAux(2)}));
+        //Insertamos a Dana
+        stage.insert(new Q.Dana({x: insAux(2), y: insAux(9)}));
     });
+
+    //NIVEL 3
     Q.scene("level3", function(stage) {
         Q.stageTMX("level3.tmx", stage);
-
-        stage.insert(new Q.Dana({x:2 * tamXBloques, y:10 * tamYBloques}));
-        stage.insert(new Q.Key({x : insAux(9), y : insAux(7)}));
-        stage.insert(new Q.Puerta({x : insAux(8), y : insAux(10)}));
-        //stage.insert(new Q.Head({x : 216, y : 113}));
-        //stage.insert(new Q.Dana({x:2 * tamXBloques, y:10 * tamYBloques}));
+        //Insertamos los bloques grises
+        {stage.insert(new Q.Pared({x : insAux(1), y : insAux(1)}));
+        stage.insert(new Q.Pared({x : insAux(7), y : insAux(1)}));
+        stage.insert(new Q.Pared({x : insAux(8), y : insAux(1)}));
+        stage.insert(new Q.Pared({x : insAux(9), y : insAux(1)}));
+        stage.insert(new Q.Pared({x : insAux(15), y : insAux(1)}));
+        stage.insert(new Q.Pared({x : insAux(1), y : insAux(2)}));
+        stage.insert(new Q.Pared({x : insAux(15), y : insAux(2)}));
+        stage.insert(new Q.Pared({x : insAux(1), y : insAux(3)}));
+        stage.insert(new Q.Pared({x : insAux(7), y : insAux(3)}));
+        stage.insert(new Q.Pared({x : insAux(9), y : insAux(3)}));
+        stage.insert(new Q.Pared({x : insAux(15), y : insAux(3)}));
+        stage.insert(new Q.Pared({x : insAux(1), y : insAux(4)}));
+        stage.insert(new Q.Pared({x : insAux(7), y : insAux(4)}));
+        stage.insert(new Q.Pared({x : insAux(8), y : insAux(4)}));
+        stage.insert(new Q.Pared({x : insAux(9), y : insAux(4)}));
+        stage.insert(new Q.Pared({x : insAux(15), y : insAux(4)}));
+        stage.insert(new Q.Pared({x : insAux(1), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(2), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(3), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(4), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(5), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(6), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(7), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(8), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(9), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(10), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(11), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(12), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(13), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(15), y : insAux(5)}));
+        stage.insert(new Q.Pared({x : insAux(1), y : insAux(6)}));
+        stage.insert(new Q.Pared({x : insAux(2), y : insAux(6)}));
+        stage.insert(new Q.Pared({x : insAux(3), y : insAux(6)}));
+        stage.insert(new Q.Pared({x : insAux(4), y : insAux(6)}));
+        stage.insert(new Q.Pared({x : insAux(5), y : insAux(6)}));
+        stage.insert(new Q.Pared({x : insAux(11), y : insAux(6)}));
+        stage.insert(new Q.Pared({x : insAux(12), y : insAux(6)}));
+        stage.insert(new Q.Pared({x : insAux(13), y : insAux(6)}));
+        stage.insert(new Q.Pared({x : insAux(15), y : insAux(6)}));
+        stage.insert(new Q.Pared({x : insAux(1), y : insAux(7)}));
+        stage.insert(new Q.Pared({x : insAux(11), y : insAux(7)}));
+        stage.insert(new Q.Pared({x : insAux(1), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(4), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(5), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(11), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(12), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(13), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(15), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(1), y : insAux(9)}));
+        stage.insert(new Q.Pared({x : insAux(6), y : insAux(9)}));
+        stage.insert(new Q.Pared({x : insAux(7), y : insAux(9)}));
+        stage.insert(new Q.Pared({x : insAux(8), y : insAux(9)}));
+        stage.insert(new Q.Pared({x : insAux(9), y : insAux(9)}));
+        stage.insert(new Q.Pared({x : insAux(10), y : insAux(9)}));
+        stage.insert(new Q.Pared({x : insAux(15), y : insAux(9)}));
+        stage.insert(new Q.Pared({x : insAux(1), y : insAux(1)}));
+        stage.insert(new Q.Pared({x : insAux(15), y : insAux(10)}));
+        stage.insert(new Q.Pared({x : insAux(1), y : insAux(11)}));
+        stage.insert(new Q.Pared({x : insAux(6), y : insAux(11)}));
+        stage.insert(new Q.Pared({x : insAux(10), y : insAux(11)}));
+        stage.insert(new Q.Pared({x : insAux(15), y : insAux(11)}));
+        stage.insert(new Q.Pared({x : insAux(1), y : insAux(12)}));
+        stage.insert(new Q.Pared({x : insAux(2), y : insAux(12)}));
+        stage.insert(new Q.Pared({x : insAux(3), y : insAux(12)}));
+        stage.insert(new Q.Pared({x : insAux(4), y : insAux(12)}));
+        stage.insert(new Q.Pared({x : insAux(5), y : insAux(12)}));
+        stage.insert(new Q.Pared({x : insAux(6), y : insAux(12)}));
+        stage.insert(new Q.Pared({x : insAux(7), y : insAux(12)}));
+        stage.insert(new Q.Pared({x : insAux(8), y : insAux(12)}));
+        stage.insert(new Q.Pared({x : insAux(9), y : insAux(12)}));
+        stage.insert(new Q.Pared({x : insAux(10), y : insAux(12)}));
+        stage.insert(new Q.Pared({x : insAux(15), y : insAux(12)}));}
+        //Insertamos la puerta
+        stage.insert(new Q.Puerta({x : insAux(10), y : insAux(7)}));
+        //Insertamos la llave
+        stage.insert(new Q.Key({x : insAux(11), y : insAux(9)}));
+        //Insertamos la campana
+        stage.insert(new Q.Campana({x : insAux(2), y : insAux(11)}));
+        //Insertamos los objetos
+        //Insertamos los bloques especiales
+        //Insertamos los bloques normales
+        {stage.insert(new Q.Bloque({x : insAux(7), y : insAux(2)}));
+        stage.insert(new Q.Bloque({x : insAux(8), y : insAux(2)}));
+        stage.insert(new Q.Bloque({x : insAux(9), y : insAux(2)}));
+        stage.insert(new Q.Bloque({x : insAux(8), y : insAux(3)}));
+        stage.insert(new Q.Bloque({x : insAux(12), y : insAux(3)}));
+        stage.insert(new Q.Bloque({x : insAux(14), y : insAux(5)}));
+        stage.insert(new Q.Bloque({x : insAux(2), y : insAux(7)}));
+        stage.insert(new Q.Bloque({x : insAux(3), y : insAux(7)}));
+        stage.insert(new Q.Bloque({x : insAux(4), y : insAux(7)}));
+        stage.insert(new Q.Bloque({x : insAux(5), y : insAux(7)}));
+        stage.insert(new Q.Bloque({x : insAux(13), y : insAux(7)}));
+        stage.insert(new Q.Bloque({x : insAux(15), y : insAux(7)}));
+        stage.insert(new Q.Bloque({x : insAux(2), y : insAux(8)}));
+        stage.insert(new Q.Bloque({x : insAux(3), y : insAux(8)}));
+        stage.insert(new Q.Bloque({x : insAux(14), y : insAux(8)}));
+        stage.insert(new Q.Bloque({x : insAux(6), y : insAux(10)}));
+        stage.insert(new Q.Bloque({x : insAux(7), y : insAux(10)}));
+        stage.insert(new Q.Bloque({x : insAux(8), y : insAux(10)}));
+        stage.insert(new Q.Bloque({x : insAux(9), y : insAux(10)}));
+        stage.insert(new Q.Bloque({x : insAux(10), y : insAux(10)}));
+        stage.insert(new Q.Bloque({x : insAux(7), y : insAux(11)}));
+        stage.insert(new Q.Bloque({x : insAux(9), y : insAux(11)}));}
+        //Insertamos los enemigos
+        stage.insert(new Q.Goblin({x : insAux(3), y : insAux(11)}));
+        //Insertamos a Dana
+        stage.insert(new Q.Dana({x: insAux(4), y: insAux(4)}));
     });
+
+    //NIVEL 4
     Q.scene("level4", function(stage) {
         Q.stageTMX("level4.tmx", stage);
-
-        stage.insert(new Q.Dana({x:2 * tamXBloques, y:10 * tamYBloques}));
-        stage.insert(new Q.Key({x : insAux(13), y : insAux(7)}));
-        stage.insert(new Q.Puerta({x : insAux(8), y : insAux(10)}));
-        //stage.insert(new Q.Head({x : 216, y : 113}));
-        //stage.insert(new Q.Dana({x:2 * tamXBloques, y:10 * tamYBloques}));
+        //Insertamos los bloques grises
+        {stage.insert(new Q.Pared({x : insAux(1), y : insAux(4)}));
+        stage.insert(new Q.Pared({x : insAux(2), y : insAux(4)}));
+        stage.insert(new Q.Pared({x : insAux(8), y : insAux(4)}));
+        stage.insert(new Q.Pared({x : insAux(14), y : insAux(4)}));
+        stage.insert(new Q.Pared({x : insAux(15), y : insAux(4)}));
+        stage.insert(new Q.Pared({x : insAux(6), y : insAux(6)}));
+        stage.insert(new Q.Pared({x : insAux(10), y : insAux(6)}));
+        stage.insert(new Q.Pared({x : insAux(1), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(2), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(3), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(4), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(8), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(12), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(13), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(14), y : insAux(8)}));
+        stage.insert(new Q.Pared({x : insAux(15), y : insAux(8)}));}
+        //Insertamos la puerta
+        stage.insert(new Q.Puerta({x : insAux(2), y : insAux(7)}));
+        //Insertamos la llave
+        stage.insert(new Q.Key({x : insAux(8), y : insAux(6)}));
+        //Insertamos la campana
+        //Insertamos los objetos
+        //Insertamos los bloques especiales
+        stage.insert(new Q.Shrine_aries({x : insAux(8), y : insAux(2)}));
+        //Insertamos los bloques normales
+        //Insertamos los enemigos
+        //Insertamos a Dana
+        stage.insert(new Q.Dana({x: insAux(14), y: insAux(7)}));
     });
 
     // PANTALLA DE FIN DE JUEGO
@@ -439,6 +601,7 @@ window.addEventListener("load", function() {
                 Q.stageScene("endGame",1, { label: "You Died" });
             else {*/
                 level = "level" + Q.state.get("level");
+                console.log(level);
                 Q.clearStages();
                 Q.stageScene(level);
                 //Q.stageScene("hud", 1);
@@ -468,6 +631,33 @@ window.addEventListener("load", function() {
                     { callback: function(){ this.destroy() } });
                 //Abrimos la puerta
                 objectLocate("doorClosed", this).play("abriendose");
+            }
+        }
+
+    });
+
+    // CAMPANA
+    Q.Sprite.extend("Campana", {
+        init: function(p) {
+            this._super(p, { 
+                asset: "bell.png",
+                sensor: true,
+                cogida: false,
+                gravity: 0
+            });
+            this.add("tween");
+            this.on("hit", this, "hit");
+        },
+        hit: function(collision){
+            if(collision.obj.isA("Dana") && !this.cogida){ 
+                //Q.state.inc('punct', 100);
+                this.cogida = true;
+                this.animate(
+                    {y: this.p.y}, 0.3, Q.Easing.Linear, 
+                    { callback: function(){ this.destroy() } });
+                puerta = objectLocate("doorClosed", this);
+                console.log(puerta);
+                this.stage.insert(new Q.Hada({x : insAux(Math.floor(puerta.p.x / 16)), y : insAux(Math.floor(puerta.p.y / 16))}));
             }
         }
 
@@ -509,23 +699,23 @@ window.addEventListener("load", function() {
     Q.Sprite.extend("Pared", {
         init: function(p) {
             this._super(p, { 
-            asset: "grey_block.png",
-            gravity: 0
-        });
-        this.add("2d");
+                asset: "grey_block.png",
+                gravity: 0
+            });
+            this.add("2d");
         }
     });
 
     // BLOQUE NARANJA
     Q.Sprite.extend("Bloque", {
         init: function(p) {
-            this._super(p, { 
-            asset: "orange_block.png",
-            gravity: 0,
-            roto: false
-        });
-        this.add("2d");
-        this.on("bump.bottom", this, "hit");
+                this._super(p, { 
+                asset: "orange_block.png",
+                gravity: 0,
+                roto: false
+            });
+            this.add("2d");
+            this.on("bump.bottom", this, "hit");
         },
         hit: function(collision){
             if(collision.obj.isA("Dana")){ 
@@ -540,16 +730,178 @@ window.addEventListener("load", function() {
 
     });
 
+    // SHRINE ARIES
+    Q.Sprite.extend("Shrine_aries", {
+        init: function(p) {
+            this._super(p, { 
+                asset: "shrine_aries.png",
+                sensor: true,
+                gravity: 0
+            });
+            this.add("tween");
+        }
+    });
+
+    // SHRINE TAURO
+    Q.Sprite.extend("Shrine_tauro", {
+        init: function(p) {
+            this._super(p, { 
+                asset: "shrine_tauro.png",
+                sensor: true,
+                gravity: 0
+            });
+            this.add("tween");
+        }
+    });
+
     Q.Sprite.extend("Hada", {
         init: function(p) {
             this._super(p, { 
-                sprite: "animaciones_cabeza",
-                sheet: "cabezaL",
+                sprite: "animaciones_hada",
+                sheet: "flyingR",
+                sensor: true,
                 w: 16,
                 h:16,
-                vx: 20
+                gravity: 0,
+                vx: 0,
+                vy: 0,
+                direccionHor: "derecha",
+                direccionVer: "arriba",
+                cogida: false,
+                points: [  [ -7, -8 ], [  7, -8 ], [  7,  8 ], [ -7,  8 ] ]
             });
-        this.add('2d, animation');
+        this.add("2d, tween, animation");
+        this.on("hit", this, "hit");
+        },
+        step:function(dt) {
+            dirHor = -1;
+            dirVer = -1;
+
+            dirHor = Math.random();
+            dirVer = Math.random();
+
+            if(this.p.direccionHor == "derecha" && this.p.direccionVer == "arriba") {
+                if(dirHor >= 0.05) {
+                    this.p.vx = 25;
+                    this.p.direccionHor = "derecha";
+                    this.play(this.p.direccionHor);
+                }
+                else {
+                    this.p.vx = -25;
+                    this.p.direccionHor = "izquierda";
+                    this.play(this.p.direccionHor);
+                }
+                if(dirVer >= 0.05) {
+                    this.p.vy = 25;
+                    this.p.direccionVer = "arriba";
+                }
+                else {
+                    this.p.vy = -25;
+                    this.p.direccionVer = "abajo";
+                }
+            }
+            else if(this.p.direccionHor == "derecha" && this.p.direccionVer == "abajo") {
+                if(dirHor >= 0.05) {
+                    this.p.vx = 25;
+                    this.p.direccionHor = "derecha";
+                    this.play(this.p.direccionHor);
+                }
+                else {
+                    this.p.vx = -25;
+                    this.p.direccionHor = "izquierda";
+                    this.play(this.p.direccionHor);
+                }
+                if(dirVer >= 0.95) {
+                    this.p.vy = 25;
+                    this.p.direccionVer = "arriba";
+                }
+                else {
+                    this.p.vy = -25;
+                    this.p.direccionVer = "abajo";
+                }
+            }
+            else if(this.p.direccionHor == "izquierda" && this.p.direccionVer == "arriba") {
+                if(dirHor >= 0.95) {
+                    this.p.vx = 25;
+                    this.p.direccionHor = "derecha";
+                    this.play(this.p.direccionHor);
+                }
+                else {
+                    this.p.vx = -25;
+                    this.p.direccionHor = "izquierda";
+                    this.play(this.p.direccionHor);
+                }
+                if(dirVer >= 0.05) {
+                    this.p.vy = 25;
+                    this.p.direccionVer = "arriba";
+                }
+                else {
+                    this.p.vy = -25;
+                    this.p.direccionVer = "abajo";
+                }
+            }
+            else if(this.p.direccionHor == "izquierda" && this.p.direccionVer == "abajo") {
+                if(dirHor >= 0.95) {
+                    this.p.vx = 25;
+                    this.p.direccionHor = "derecha";
+                    this.play(this.p.direccionHor);
+                }
+                else {
+                    this.p.vx = -25;
+                    this.p.direccionHor = "izquierda";
+                    this.play(this.p.direccionHor);
+                }
+                if(dirVer >= 0.95) {
+                    this.p.vy = 25;
+                    this.p.direccionVer = "arriba";
+                }
+                else {
+                    this.p.vy = -25;
+                    this.p.direccionVer = "abajo";
+                }
+            }
+        },
+        hit: function(collision){
+            if(collision.obj.isA("Dana") && this.p.cogida == false){ 
+                //Q.state.inc('punct', 100);
+                this.p.cogida = true;
+                this.animate(
+                    {y: this.p.y}, 0.15, Q.Easing.Linear, 
+                    { callback: function(){ this.destroy() } });
+            }
+        }
+    });
+
+    // CALAVERA SPAWNER
+    Q.Sprite.extend("Calavera_spawner", {
+        init: function(p) {
+            this._super(p, { 
+                asset: "skull.png",
+                sensor: true,
+                spawn: 4.5,
+                gravity: 0
+            });
+            this.add("tween");
+        },
+        step: function(dt) {
+            if(this.p.spawn >= 0)
+                this.p.spawn -= dt;
+            else {
+                this.p.spawn = 4;
+                this.stage.insert(new Q.Head({x : this.p.x, y : this.p.y}));
+            }
+        }
+    });
+
+    // CALAVERA DE PEGA
+    Q.Sprite.extend("Calavera", {
+        init: function(p) {
+            this._super(p, { 
+                asset: "skull.png",
+                sensor: true,
+                gravity: 0
+            });
+            this.add("tween");
         }
     });
 
@@ -561,9 +913,10 @@ window.addEventListener("load", function() {
                 sheet: "cabezaL",
                 w: 16,
                 h:16,
-                vx: 20,
-                live_time: 17,
-                movimiento: "izquierda"
+                vx: 28,
+                live_time: 9,
+                movimiento: "izquierda",
+                points: [  [ -7, -8 ], [  7, -8 ], [  7,  8 ], [ -7,  8 ] ]
 
             });
             this.add('2d,tween, aiBounce, animation');
@@ -696,12 +1049,17 @@ window.addEventListener("load", function() {
         abriendose: {frames: [0, 1, 2], rate: 1/3, loop: false, trigger: "llave_t"},
         abierta: {frames: [2], loop: false}
     });
+
+    //ANIMACIONES DEL HADA
+    Q.animations("animaciones_hada", {
+        derecha: {frames: [0, 1], rate: 1/13, loop: true},
+        izquierda: {frames: [2, 3], rate: 1/13, loop: true}
+    });
     
     // ANIMACIONES DEL ENEMIGO CABEZA
     Q.animations("animaciones_cabeza",{
-        izquierda: {frames: [0, 1, 2, 3],rate: 1/2.5, loop: true},
+        izquierda: {frames: [0, 1, 2, 3], rate: 1/2.5, loop: true},
         derecha: {frames: [4, 5, 6, 7], rate: 1/2.5, loop: true}
-        
     });
 
     // ANIMACIONES DEL ENEMIGO GOBLIN (SEÑOR PUÑOS)
@@ -720,13 +1078,16 @@ window.addEventListener("load", function() {
             "door.png", "door.json",
             "orange_block.png","orange_block_destroyed.png",
             //"block_interaction.png", "block_interaction.json",
-            "grey_block.png",
+            "grey_block.png", "skull.png",
+            "shrine_tauro.png", "shrine_aries.png",
+            "fairy.png", "fairy.json",
             "enemy_head.png","enemy_head.json",
             "enemy_goblin.png", "enemy_goblin.json"
         ], function() {
         Q.compileSheets("dana.png", "dana.json");
         //Q.compileSheets("block_interaction.png", "block_interaction.json");
         Q.compileSheets("door.png", "door.json");
+        Q.compileSheets("fairy.png", "fairy.json");
         Q.compileSheets("enemy_head.png", "enemy_head.json");
         Q.compileSheets("enemy_goblin.png", "enemy_goblin.json");
     });
