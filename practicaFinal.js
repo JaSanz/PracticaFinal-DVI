@@ -1077,7 +1077,7 @@ window.addEventListener("load", function() {
             "bell.png", "keyP.png",
             "door.png", "door.json",
             "orange_block.png","orange_block_destroyed.png",
-            //"block_interaction.png", "block_interaction.json",
+            "block_interaction.png", "block_interaction.json",
             "grey_block.png", "skull.png",
             "shrine_tauro.png", "shrine_aries.png",
             "fairy.png", "fairy.json",
@@ -1085,7 +1085,7 @@ window.addEventListener("load", function() {
             "enemy_goblin.png", "enemy_goblin.json"
         ], function() {
         Q.compileSheets("dana.png", "dana.json");
-        //Q.compileSheets("block_interaction.png", "block_interaction.json");
+        Q.compileSheets("block_interaction.png", "block_interaction.json");
         Q.compileSheets("door.png", "door.json");
         Q.compileSheets("fairy.png", "fairy.json");
         Q.compileSheets("enemy_head.png", "enemy_head.json");
