@@ -31,6 +31,8 @@ window.addEventListener("load", function() {
     // NIVEL 1
     Q.scene("level1", function(stage) {
         Q.stageTMX("level1.tmx", stage);
+        Q.stageScene("hud",1);
+        //Q.state.reset({punct: 0, life: 0});
         //Insertamos la llave
         stage.insert(new Q.Key({x : insAux(13), y : insAux(7)}));
         //Insertamos la puerta
@@ -96,12 +98,12 @@ window.addEventListener("load", function() {
             if (/*Q.state.get("lives") == 0 || */Q.state.get("level") > numNiveles){
                 Q.state.reset({lives : 3, level: 1});
                 Q.stageScene('level1');
-                //Q.stageScene("hud",1);
+                Q.stageScene("hud",1);
             }
             else{
                 level = "level" + Q.state.get("level");
 				Q.stageScene(level);
-				//Q.stageScene("hud",1);
+			    Q.stageScene("hud",1);
             }
         });
         
@@ -151,14 +153,94 @@ window.addEventListener("load", function() {
         return null;
     }
 
+      // HUD
+      Q.scene("hud", function(stage) {
+        var container = stage.insert(new Q.UI.Container({
+            x: 20,
+            y: 0,
+            fill: "black"
+        }));
+
+        //container.fit(10)
+
+        container.insert(new Q.Score());
+       // container.insert(new Q.Score_puntuacion());
+        container.insert(new Q.Life());
+        //container.insert(new Q.Life_puntuacion());
+        container.insert(new Q.Fairy());
+        //container.insert(new Q.Fairy_puntuacion());
+        stage.insert(container);
+        
+    });
+
      // Puntuación
-     Q.UI.Text.extend("Score", {
+    Q.UI.Text.extend("Score", {
         init: function(p) {
             this._super(p, {
                 label: "SCORE ",
                 color: "white",
-                x: 16,
+                x: 20,
+                y: 0,
+                size: 7
+            });
+        }
+    });
+
+    // Contador puntuación
+    Q.UI.Text.extend("Score_puntuacion", {
+        init: function(p) {
+            this._super(p, {
+                label: Q.state.get("life"),
+                color: "white",
+                x: 0,
+                y: 16,
+                size: 7
+            });
+            Q.state.on("change.punct", this, "update_punct");
+        },
+        update_punct: function(punct) {
+            this.p.label = punct;
+        }
+    });
+
+    // VIDAS
+    Q.UI.Text.extend("Life", {
+        init: function(p) {
+            this._super(p, {
+                label: "LIFE ",
+                color: "white",
+                x: 60,
+                y: 0,
+                size: 7
+            });
+        }
+    });
+
+    // Contador vida
+    Q.UI.Text.extend("Life_puntuacion", {
+        init: function(p) {
+            this._super(p, {
+                label: Q.state.get("life"),
+                color: "white",
+                x: 100,
                 y: 16
+            });
+            Q.state.on("change.life", this, "update_life");
+        },
+        update_life: function(punct) {
+            this.p.label = life;
+        }
+    });
+
+    // Hadas
+    Q.UI.Text.extend("Fairy", {
+        init: function(p) {
+            this._super(p, {
+                label: "FAIRY",
+                color: "white",
+                x: 100,
+                y: 0,
+                size: 7
             });
         }
     });
@@ -472,12 +554,12 @@ window.addEventListener("load", function() {
             this.on("muerte_t", this, "muerte");
             this.on("bump.bottom, bump.top", function(collision) {
                 if(collision.obj.isA("Dana")) {
-                    collision.obj.muerteAux();
+                    //collision.obj.muerteAux();
                 }
             }); 
             this.on("bump.left, bump.right", function(collision) {
                 if(collision.obj.isA("Dana")) {
-                    collision.obj.muerteAux();
+                    //collision.obj.muerteAux();
                 }
                 else if (collision.obj.isA("Block")){
                     collision.obj.destroy();
@@ -522,6 +604,55 @@ window.addEventListener("load", function() {
         muerte: function(dt) {
             this.destroy();
         }
+    });
+
+      //  Blue jar
+    Q.Sprite.extend("BlueJar",{
+        init: function(p) {
+			this._super(p, {
+            asset: "blue_jar.png",
+            sensor: true
+		});
+			this.on("hit", this, "sensor");
+		},
+
+		sensor: function(collision){
+			
+		}
+
+    });
+      
+    //  blue_diamond
+    Q.Sprite.extend("blueDiamond",{
+        init: function(p) {
+			this._super(p, {
+            asset: "blue_diamond.png",
+            sensor: true
+		});
+			this.on("hit", this, "sensor");
+		},
+
+		sensor: function(collision){
+		
+		}
+
+    });
+    
+    //  Sapphire
+    Q.Sprite.extend("Sapphire",{
+        init: function(p) {
+			this._super(p, {
+            asset: "sapphire.png",
+            sensor: true,
+            position: [[6,8]]
+		});
+			this.on("hit", this, "sensor");
+		},
+
+		sensor: function(collision){
+			
+		}
+
     });
 
 
@@ -585,7 +716,8 @@ window.addEventListener("load", function() {
             "orange_block.png","orange_block_destroyed.png",
             "block_interaction.png", "block_interaction.json",
             "enemy_head.png","enemy_head.json",
-            "enemy_goblin.png", "enemy_goblin.json"
+            "enemy_goblin.png", "enemy_goblin.json",
+            "blue_jar.png", "blue_diamond.png","sapphire.png"
         ], function() {
         Q.compileSheets("dana.png", "dana.json");
         Q.compileSheets("block_interaction.png", "block_interaction.json");
