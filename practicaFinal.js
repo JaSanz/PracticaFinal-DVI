@@ -18,7 +18,9 @@ window.addEventListener("load", function() {
     // CARGA
     Q.loadTMX("level1.tmx, level2.tmx, level3.tmx, level4.tmx", function() {
         Q.clearStages();
-        Q.state.reset({punct: 0, life: 10000, fairy:0, lives:3});
+        //Q.state.reset({punct: 0, life: 10000, fairy:0, lives:3});
+        Q.state.reset({punct: 0, life: 10000, fairy:0,level: 1});
+        setInterval(function(){ Q.state.dec("life", 10); }, 500);
         Q.stageScene("level1");
         //Q.stageScene("level2");
         //Q.stageScene("level3");
@@ -27,8 +29,7 @@ window.addEventListener("load", function() {
 
     // NIVEL 1
     Q.scene("level1", function(stage) {
-        Q.state.reset({level: 1});
-        Q.state.reset({punct: 0, life: 10000, fairy:0});
+        //Q.state.reset({punct: 0, life: 10000, fairy:0,level: 1});
         Q.stageTMX("level1.tmx", stage);
         Q.stageScene("hud",1);
 
@@ -400,6 +401,17 @@ window.addEventListener("load", function() {
         
         container.fit(20);
     });
+    // PANTALLA PRINCIPAL
+    Q.scene('mainTitle',function(stage) {
+        var button = new Q.UI.Button({x: 0, y: 0, asset : "maintittle.jpg"});
+        stage.insert(button);
+        
+        button.on("click",function() {
+            Q.clearStages();
+            Q.stageScene('level1');
+            Q.stageScene("hud",1);
+        });
+    });
 
     /**
      * Función auxiliar y de ayuda para poner bloques e items en una posición exacta.
@@ -767,9 +779,11 @@ window.addEventListener("load", function() {
             if(this.p.muerto == false) {
                 this.p.muerto = true;
                 //Q.state.dec("lives", 1);
+                this.p.vy = 100;
                 this.p.collisionMask = Q.SPRITE_NONE;
                 this.play("muerte_" + direccion,2); //Hacemos que desaparezca a los dos segundos para evitar situaciones no deseadas
-                
+               // this.play("muerte_derecha",2);
+                //setTimeout(function(t){  t.destroy();}, 1000, this);
             }      
         },    
         muerte: function(p) {
@@ -781,6 +795,7 @@ window.addEventListener("load", function() {
                 Q.clearStages();
                 Q.stageScene(level);
                 //Q.stageScene("hud", 1);
+            
             //}
         }
 
