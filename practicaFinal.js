@@ -18,6 +18,7 @@ window.addEventListener("load", function() {
     // CARGA
     Q.loadTMX("level1.tmx, level2.tmx, level3.tmx, level4.tmx", function() {
         Q.clearStages();
+        Q.state.reset({punct: 0, life: 10000, fairy:0});
         Q.stageScene("level1");
         //Q.stageScene("level2");
         //Q.stageScene("level3");
@@ -29,7 +30,6 @@ window.addEventListener("load", function() {
         Q.state.reset({level: 1});
         Q.stageTMX("level1.tmx", stage);
         Q.stageScene("hud",1);
-        //Q.state.reset({punct: 0, life: 0});
 
         //Insertamos los bloques grises
         {stage.insert(new Q.Pared({x : insAux(1), y : insAux(1)}));
@@ -451,14 +451,12 @@ window.addEventListener("load", function() {
             fill: "black"
         }));
 
-        //container.fit(10)
-
         container.insert(new Q.Score());
-        //container.insert(new Q.Score_puntuacion());
+        container.insert(new Q.Score_puntuacion());
         container.insert(new Q.Life());
-        //container.insert(new Q.Life_puntuacion());
+        container.insert(new Q.Life_puntuacion());
         container.insert(new Q.Fairy());
-        //container.insert(new Q.Fairy_puntuacion());
+        container.insert(new Q.Fairy_puntuacion());
         stage.insert(container);
         
     });
@@ -469,9 +467,9 @@ window.addEventListener("load", function() {
             this._super(p, {
                 label: "SCORE ",
                 color: "white",
-                x: 20,
+                x: 15,
                 y: 0,
-                size: 7
+                size: 16
             });
         }
     });
@@ -480,16 +478,16 @@ window.addEventListener("load", function() {
     Q.UI.Text.extend("Score_puntuacion", {
         init: function(p) {
             this._super(p, {
-                label: Q.state.get("life"),
+                label:  ""+ Q.state.get("punct"),
                 color: "white",
-                x: 20,
-                y: 16,
-                size: 7
+                x: 70,
+                y: 0,
+                size: 14
             });
             Q.state.on("change.punct", this, "update_punct");
         },
         update_punct: function(punct) {
-            this.p.label = punct;
+           this.p.label = " "+ punct;
         }
     });
 
@@ -499,9 +497,9 @@ window.addEventListener("load", function() {
             this._super(p, {
                 label: "LIFE ",
                 color: "white",
-                x: 60,
+                x: 120,
                 y: 0,
-                size: 7
+                size: 15
             });
         }
     });
@@ -510,15 +508,16 @@ window.addEventListener("load", function() {
     Q.UI.Text.extend("Life_puntuacion", {
         init: function(p) {
             this._super(p, {
-                label: Q.state.get("life"),
+                label: "" + Q.state.get("life"),
                 color: "white",
-                x: 100,
-                y: 16
+                x: 150,
+                y: 0,
+                size: 16
             });
             Q.state.on("change.life", this, "update_life");
         },
-        update_life: function(punct) {
-            this.p.label = life;
+        update_life: function(life) {
+            this.p.label = "" + life;
         }
     });
 
@@ -528,10 +527,27 @@ window.addEventListener("load", function() {
             this._super(p, {
                 label: "FAIRY",
                 color: "white",
-                x: 100,
+                x: 200,
                 y: 0,
-                size: 7
+                size: 16
             });
+        }
+    });
+
+    // CONTADOR DE Hadas
+    Q.UI.Text.extend("Fairy_puntuacion", {
+        init: function(p) {
+            this._super(p, {
+                label: "" + Q.state.get("fairy"),
+                color: "white",
+                x: 240,
+                y: 0,
+                size: 16
+            });
+            Q.state.on("change.fairy", this, "update_fairy");
+        },
+        update_fairy: function(fairy) {
+            this.p.label = "" + fairy;
         }
     });
 
@@ -751,10 +767,10 @@ window.addEventListener("load", function() {
                 this.p.muerto = true;
                 //Q.state.dec("lives", 1);
                 this.p.collisionMask = Q.SPRITE_NONE;
-                this.play("muerte_" + direccion, 2); //Hacemos que desaparezca a los dos segundos para evitar situaciones no deseadas
+                this.play("muerte_" + direccion,2); //Hacemos que desaparezca a los dos segundos para evitar situaciones no deseadas
+                
             }      
-        },
-        
+        },    
         muerte: function(p) {
             this.destroy();
             /*if(Q.state.get("lives") == 0)
@@ -1022,7 +1038,7 @@ window.addEventListener("load", function() {
         },
         hit: function(collision){
             if(collision.obj.isA("Dana") && this.p.cogida == false){ 
-                //Q.state.inc('punct', 100);
+                Q.state.inc('fairy', 1);
                 this.p.cogida = true;
                 this.animate(
                     {y: this.p.y}, 0.15, Q.Easing.Linear, 
@@ -1184,7 +1200,7 @@ window.addEventListener("load", function() {
         },
         hit: function(collision){
             if (collision.obj.isA("Dana") && this.p.asset == "blue_jar.png"){
-                //Q.state.inc('punct', 100);
+                Q.state.inc('punct', 100);
                 this.destroy();
             }
         }
@@ -1203,19 +1219,19 @@ window.addEventListener("load", function() {
 		},
 		sensor: function(collision){
             if (collision.obj.isA("Dana") && this.p.asset == "blue_diamond.png"){
-                 //Q.state.inc('punct', 100);
+                Q.state.inc('punct', 100);
                 this.destroy();
             }
             else if (collision.obj.isA("Dana") && this.p.asset == "blue_jar_especial.png"){
-                 // Q.state.inc('punct', 200);
+                Q.state.inc('punct', 200);
                 this.destroy();
             }
             else if (collision.obj.isA("Dana") && this.p.asset == "double_golden_coin.png"){
-                 // Q.state.inc('punct', 2000);
+                Q.state.inc('punct', 2000);
                 this.destroy();
             }
             else if (collision.obj.isA("Dana") && this.p.asset == "orange_crystal.png"){
-               // Q.state.inc('punct', 200);
+                Q.state.inc('punct', 200);
                 this.destroy();
             }
 		}
@@ -1234,7 +1250,7 @@ window.addEventListener("load", function() {
 		},
 		sensor: function(collision){
 			if (collision.obj.isA("Dana") && this.p.asset == "sapphire.png"){
-                // Q.state.inc('punct', 500);
+                Q.state.inc('punct', 500);
                 this.destroy();
             }
 		}
@@ -1253,7 +1269,7 @@ window.addEventListener("load", function() {
         },
         sensor: function(collision){
             if (collision.obj.isA("Dana") && this.p.asset == "medecine_orange.png"){
-                // Q.state.inc('punct', 500);
+                Q.state.inc('punct', 500);
                 //Elimina todos los enemigos del mapa y los convierte en tesoros
                 this.destroy();
             }
@@ -1273,7 +1289,7 @@ window.addEventListener("load", function() {
         },
         sensor: function(collision){
             if (collision.obj.isA("Dana") && this.p.asset == "emerald.png"){
-                // Q.state.inc('punct', 5000);
+                Q.state.inc('punct', 5000);
                 this.destroy();
             }
         }
@@ -1291,7 +1307,7 @@ window.addEventListener("load", function() {
         },
         sensor: function(collision){
             if (collision.obj.isA("Dana") && this.p.asset == "extra_life.png"){
-                // Q.state.inc('punct', 1000);
+                 Q.state.inc('punct', 1000);
                 // Q.state.inc('lives', 100);
                 this.destroy();
             }
@@ -1306,14 +1322,15 @@ window.addEventListener("load", function() {
             gravity: 0
         });
             this.add("2d");
-            this.on("hit", this, "sensor");
-        },
+            //this.on("hit", this, "sensor");
+        }
+        /*,
         sensor: function(collision){
             if (collision.obj.isA("Dana") && this.p.asset == "bell.png"){
                 this.stage.insert(new Q.Hada({x: relativeX * 16 + 8, y: relativeY * 16 - 8}));
                 this.destroy();
             }
-        }
+        }*/
     });
 
 
@@ -1336,7 +1353,7 @@ window.addEventListener("load", function() {
         varita_agachado_derecha: {frames: [20, 21, 22], rate: 1/7, loop: false},
         varita_agachado_izquierda: {frames: [8, 9, 10], rate: 1/7, loop: false},
         muerte_derecha: {frames: [23], loop: false, trigger: "muerte_t"},
-        muerte_izquierda: {frames: [11], rate: 1, loop: false, trigger: "muerte_t"}
+        muerte_izquierda: {frames: [11], loop: false, trigger: "muerte_t"}
     });
 
     // ANIMACIONES DEL BLOQUE NARANJA
