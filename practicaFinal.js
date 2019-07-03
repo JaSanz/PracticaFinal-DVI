@@ -18,7 +18,7 @@ window.addEventListener("load", function() {
     // CARGA
     Q.loadTMX("level1.tmx, level2.tmx, level3.tmx, level4.tmx", function() {
         Q.clearStages();
-        Q.state.reset({punct: 0, life: 10000, fairy:0});
+        Q.state.reset({punct: 0, life: 10000, fairy:0, lives:3});
         Q.stageScene("level1");
         //Q.stageScene("level2");
         //Q.stageScene("level3");
@@ -28,6 +28,7 @@ window.addEventListener("load", function() {
     // NIVEL 1
     Q.scene("level1", function(stage) {
         Q.state.reset({level: 1});
+        Q.state.reset({punct: 0, life: 10000, fairy:0});
         Q.stageTMX("level1.tmx", stage);
         Q.stageScene("hud",1);
 
@@ -386,7 +387,7 @@ window.addEventListener("load", function() {
         button.on("click",function() {
             Q.clearStages();
             if (/*Q.state.get("lives") == 0 || */Q.state.get("level") > numNiveles){
-                Q.state.reset({lives : 3, level: 1});
+               // Q.state.reset({lives : 3, level: 1});
                 Q.stageScene('level1');
                 Q.stageScene("hud",1);
             }
@@ -467,9 +468,9 @@ window.addEventListener("load", function() {
             this._super(p, {
                 label: "SCORE ",
                 color: "white",
-                x: 15,
+                x: 12,
                 y: 0,
-                size: 16
+                size: 12
             });
         }
     });
@@ -480,9 +481,9 @@ window.addEventListener("load", function() {
             this._super(p, {
                 label:  ""+ Q.state.get("punct"),
                 color: "white",
-                x: 70,
+                x: 62,
                 y: 0,
-                size: 14
+                size: 12
             });
             Q.state.on("change.punct", this, "update_punct");
         },
@@ -497,9 +498,9 @@ window.addEventListener("load", function() {
             this._super(p, {
                 label: "LIFE ",
                 color: "white",
-                x: 120,
+                x: 105,
                 y: 0,
-                size: 15
+                size: 12
             });
         }
     });
@@ -512,7 +513,7 @@ window.addEventListener("load", function() {
                 color: "white",
                 x: 150,
                 y: 0,
-                size: 16
+                size: 12
             });
             Q.state.on("change.life", this, "update_life");
         },
@@ -529,7 +530,7 @@ window.addEventListener("load", function() {
                 color: "white",
                 x: 200,
                 y: 0,
-                size: 16
+                size: 12
             });
         }
     });
@@ -542,7 +543,7 @@ window.addEventListener("load", function() {
                 color: "white",
                 x: 240,
                 y: 0,
-                size: 16
+                size: 12
             });
             Q.state.on("change.fairy", this, "update_fairy");
         },
@@ -1308,7 +1309,7 @@ window.addEventListener("load", function() {
         sensor: function(collision){
             if (collision.obj.isA("Dana") && this.p.asset == "extra_life.png"){
                  Q.state.inc('punct', 1000);
-                // Q.state.inc('lives', 100);
+                 Q.state.inc('lives', 1);
                 this.destroy();
             }
         }
