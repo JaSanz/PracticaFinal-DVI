@@ -1,6 +1,3 @@
-//TODO mirar el tema del audio
-//TODO mirar si se pueden disparar bolas de fuego estando agachado
-//TODO sprites de impulso salto y andar agachado
 //TODO puntuación. IMPORTANTE de cara a completar todo el código de los enemigos
 //TODO la muerte no funciona
 
@@ -14,7 +11,7 @@ window.addEventListener("load", function() {
 
     var Q = Quintus()                          // Create a new engine instance
     .include("Sprites, Scenes, Input, Touch, UI, 2D, TMX, Anim") // Load any needed modules
-    .setup({width:272, height:224})     // Add a canvas element onto the page
+    .setup({width:272, height:224, scaleToFit: true, maximize: true})     // Add a canvas element onto the page
     .controls()                         // Add in default controls (keyboard, buttons)
     .touch();                            // Add in touch support (for the UI)
 
@@ -33,8 +30,6 @@ window.addEventListener("load", function() {
         Q.stageTMX("level1.tmx", stage);
         Q.stageScene("hud",1);
         //Q.state.reset({punct: 0, life: 0});
-        //Insertamos la llave
-        stage.insert(new Q.Key({x : insAux(13), y : insAux(7)}));
 
         //Insertamos los bloques grises
         {stage.insert(new Q.Pared({x : insAux(1), y : insAux(1)}));
@@ -150,17 +145,16 @@ window.addEventListener("load", function() {
         stage.insert(new Q.Pared({x : insAux(15), y : insAux(12)}));}
         //Insertamos la puerta
         stage.insert(new Q.Puerta({x : insAux(8), y : insAux(10)}));
-        //stage.insert(new Q.Puerta({x : insAux(8), y : insAux(10)}));
         //Insertamos la llave
         stage.insert(new Q.Key({x : insAux(13), y : insAux(7)}));
         //Insertamos la campana
         stage.insert(new Q.Campana({x : insAux(8), y : insAux(2)}));
         //Insertamos los objetos
+        //Insertamos los bloques especiales
         stage.insert(new Q.BlueJarBlock({x : insAux(5), y : insAux(4)}));
         stage.insert(new Q.BlueJarBlock({x : insAux(11), y : insAux(4)}));
         stage.insert(new Q.SapphireBlock({x : insAux(5), y : insAux(7)}));
         stage.insert(new Q.BellBlock({x : insAux(4), y : insAux(10)}));
-        //Insertamos los bloques especiales
         stage.insert(new Q.BlueDiamondBlock({x : insAux(11), y : insAux(7)}));
         //Insertamos los bloques normales
         {stage.insert(new Q.Bloque({x : insAux(8), y : insAux(7)}));
@@ -196,7 +190,7 @@ window.addEventListener("load", function() {
         //Insertamos la llave
         stage.insert(new Q.Key({x : insAux(14), y : insAux(3)}));
         //Insertamos la campana
-        stage.insert(new Q.Campana({x : insAux(2), y : insAux(8)}));
+        stage.insert(new Q.Campana({x : insAux(8), y : insAux(2)}));
         //Insertamos los objetos
         stage.insert(new Q.MedecineBlock({x : insAux(6), y : insAux(8)}));
         stage.insert(new Q.BlueJarBlock({x : insAux(9), y : insAux(6)}));
@@ -309,7 +303,7 @@ window.addEventListener("load", function() {
         stage.insert(new Q.Campana({x : insAux(2), y : insAux(11)}));
         //Insertamos los objetos
         stage.insert(new Q.ExtraLifeBlock({x : insAux(14), y : insAux(1)}));
-        stage.insert(new Q.EmeraldBock({x : insAux(12), y : insAux(7)}));
+        stage.insert(new Q.EmeraldBlock({x : insAux(12), y : insAux(7)}));
         stage.insert(new Q.ExtraLifeBlock({x : insAux(2), y : insAux(10)}));
         //Insertamos los bloques especiales
         //Insertamos los bloques normales
@@ -368,7 +362,7 @@ window.addEventListener("load", function() {
         //Insertamos la campana
         //Insertamos los objetos
         stage.insert(new Q.BellBlock({x : insAux(5), y : insAux(10)}));
-        stage.insert(new Q.BellBlock({x : insAux(8), y : insAux(10)}));
+        stage.insert(new Q.BellBlock({x : insAux(11), y : insAux(10)}));
         //Insertamos los bloques especiales
         stage.insert(new Q.Shrine_aries({x : insAux(11), y : insAux(2)}));
         //Insertamos los bloques normales
@@ -449,8 +443,8 @@ window.addEventListener("load", function() {
         return null;
     }
 
-      // HUD
-      Q.scene("hud", function(stage) {
+    // HUD
+    Q.scene("hud", function(stage) {
         var container = stage.insert(new Q.UI.Container({
             x: 20,
             y: 0,
@@ -460,7 +454,7 @@ window.addEventListener("load", function() {
         //container.fit(10)
 
         container.insert(new Q.Score());
-       // container.insert(new Q.Score_puntuacion());
+        //container.insert(new Q.Score_puntuacion());
         container.insert(new Q.Life());
         //container.insert(new Q.Life_puntuacion());
         container.insert(new Q.Fairy());
@@ -469,7 +463,7 @@ window.addEventListener("load", function() {
         
     });
 
-     // Puntuación
+    // PUNTUACIÓN
     Q.UI.Text.extend("Score", {
         init: function(p) {
             this._super(p, {
@@ -482,13 +476,13 @@ window.addEventListener("load", function() {
         }
     });
 
-    // Contador puntuación
+    // CONTADOR DE PUNTUACIÓN
     Q.UI.Text.extend("Score_puntuacion", {
         init: function(p) {
             this._super(p, {
                 label: Q.state.get("life"),
                 color: "white",
-                x: 0,
+                x: 20,
                 y: 16,
                 size: 7
             });
@@ -512,7 +506,7 @@ window.addEventListener("load", function() {
         }
     });
 
-    // Contador vida
+    // CONTADOR DE VIDA
     Q.UI.Text.extend("Life_puntuacion", {
         init: function(p) {
             this._super(p, {
@@ -669,7 +663,7 @@ window.addEventListener("load", function() {
                             this.stage.items[a].p.asset = "emerald.png";
                         }
                         else if (a != -1 && (this.stage.items[a].p.asset == "orange_block_medecine.png")){
-                            this.stage.items[a].p.asset = "medecinde_orange.png";
+                            this.stage.items[a].p.asset = "medecine_orange.png";
                         }
                         else if (a != -1 && (this.stage.items[a].p.asset == "orange_block_extraLife.png")){
                             this.stage.items[a].p.asset = "extra_life.png";
@@ -678,9 +672,8 @@ window.addEventListener("load", function() {
                             this.stage.items[a].p.asset = "sapphire.png";
                         }
                         else if (a != -1 && (this.stage.items[a].p.asset == "orange_block_bell.png")){
-                            //this.stage.items[a].p.asset = "bell.png";
-                            this.destroy();
-                            this.stage.insert(new Q.Campane({x: relativeX * 16 + 8, y: relativeY * 16 - 8}));
+                            this.stage.remove(this.stage.items[a]);
+                            this.stage.insert(new Q.Campana({x: relativeX * 16 + 8, y: relativeY * 16 - 8}));
                         }
                         else if (a != -1 && (this.stage.items[a].p.asset == "blue_diamond.png")){
                             this.stage.items[a].p.asset = "blue_jar_especial.png";
@@ -704,6 +697,40 @@ window.addEventListener("load", function() {
                         else if(a != -1 && (this.stage.items[a].p.asset == "orange_block.png" || 
                                 this.stage.items[a].p.asset == "orange_block_destroyed.png")) {
                             this.stage.remove(this.stage.items[a]);
+                        }
+                        else if (a != -1 && (this.stage.items[a].p.asset == "orange_block_blueDiamond.png")){
+                            this.stage.items[a].p.asset = "blue_diamond.png";
+                        }
+                        else if (a != -1 && (this.stage.items[a].p.asset == "orange_block_blueJar.png")){
+                            this.stage.items[a].p.asset = "blue_jar.png";
+                        }
+                        else if (a != -1 && (this.stage.items[a].p.asset == "orange_block_emerald.png")){
+                            this.stage.items[a].p.asset = "emerald.png";
+                        }
+                        else if (a != -1 && (this.stage.items[a].p.asset == "orange_block_medecine.png")){
+                            this.stage.items[a].p.asset = "medecine_orange.png";
+                        }
+                        else if (a != -1 && (this.stage.items[a].p.asset == "orange_block_extraLife.png")){
+                            this.stage.items[a].p.asset = "extra_life.png";
+                        }
+                        else if (a != -1 && (this.stage.items[a].p.asset == "orange_block_sapphire.png")){
+                            this.stage.items[a].p.asset = "sapphire.png";
+                        }
+                        else if (a != -1 && (this.stage.items[a].p.asset == "orange_block_bell.png")){
+                            this.stage.remove(this.stage.items[a]);
+                            this.stage.insert(new Q.Campana({x: relativeX * 16 - 8, y: relativeY * 16 - 8}));
+                        }
+                        else if (a != -1 && (this.stage.items[a].p.asset == "blue_diamond.png")){
+                            this.stage.items[a].p.asset = "blue_jar_especial.png";
+                        }
+                        else if (a != -1 && (this.stage.items[a].p.asset == "blue_jar_especial.png")){
+                            this.stage.items[a].p.asset = "orange_crystal.png";
+                        }
+                        else if (a != -1 && (this.stage.items[a].p.asset == "orange_crystal.png")){
+                            this.stage.items[a].p.asset = "double_golden_coin.png";
+                        }
+                        else if (a != -1 && (this.stage.items[a].p.asset == "double_golden_coin.png")){
+                            this.stage.items[a].p.asset = "blue_diamond.png";
                         }
                     }
                 }
@@ -734,7 +761,6 @@ window.addEventListener("load", function() {
                 Q.stageScene("endGame",1, { label: "You Died" });
             else {*/
                 level = "level" + Q.state.get("level");
-                console.log(level);
                 Q.clearStages();
                 Q.stageScene(level);
                 //Q.stageScene("hud", 1);
@@ -760,7 +786,7 @@ window.addEventListener("load", function() {
                 //Q.state.inc('punct', 100);
                 this.cogida = true;
                 this.animate(
-                    {y: this.p.y}, 0.3, Q.Easing.Linear, 
+                    {y: this.p.y}, 0.15, Q.Easing.Linear, 
                     { callback: function(){ this.destroy() } });
                 //Abrimos la puerta
                 objectLocate("doorClosed", this).play("abriendose");
@@ -786,10 +812,9 @@ window.addEventListener("load", function() {
                 //Q.state.inc('punct', 100);
                 this.cogida = true;
                 this.animate(
-                    {y: this.p.y}, 0.3, Q.Easing.Linear, 
+                    {y: this.p.y}, 0.15, Q.Easing.Linear, 
                     { callback: function(){ this.destroy() } });
                 puerta = objectLocate("doorClosed", this);
-                console.log(puerta);
                 this.stage.insert(new Q.Hada({x : insAux(Math.floor(puerta.p.x / 16)), y : insAux(Math.floor(puerta.p.y / 16))}));
             }
         }
@@ -887,6 +912,7 @@ window.addEventListener("load", function() {
         }
     });
 
+    // HADA
     Q.Sprite.extend("Hada", {
         init: function(p) {
             this._super(p, { 
@@ -1146,11 +1172,12 @@ window.addEventListener("load", function() {
         }
     });
 
-      //  Blue jar
+    // JARRA AZUL
     Q.Sprite.extend("BlueJarBlock",{
         init: function(p) {
 			this._super(p, {
-            asset: "orange_block_blueJar.png"
+            asset: "orange_block_blueJar.png",
+            gravity: 0
         });
         this.add("2d");
         this.on("hit", this,"hit");
@@ -1164,11 +1191,12 @@ window.addEventListener("load", function() {
 
     });
       
-    //  blue_diamond
+    // DIAMANTE AZUL
     Q.Sprite.extend("BlueDiamondBlock",{
         init: function(p) {
 			this._super(p, {
-            asset: "orange_block_blueDiamond.png"
+            asset: "orange_block_blueDiamond.png",
+            gravity: 0
         });
             this.add("2d");
 			this.on("hit", this, "sensor");
@@ -1194,11 +1222,12 @@ window.addEventListener("load", function() {
 
     });
     
-    //  Sapphire
+    // ZAFIRO
     Q.Sprite.extend("SapphireBlock",{
         init: function(p) {
 			this._super(p, {
-            asset: "orange_block_sapphire.png"
+            asset: "orange_block_sapphire.png",
+            gravity: 0
         });
             this.add("2d");
 			this.on("hit", this, "sensor");
@@ -1211,11 +1240,13 @@ window.addEventListener("load", function() {
 		}
 
     });
-    // Medecine
+
+    // MEDICINA
     Q.Sprite.extend("MedecineBlock",{
         init: function(p) {
             this._super(p, {
-            asset: "orange_block_medecine.png"
+            asset: "orange_block_medecine.png",
+            gravity: 0
         });
             this.add("2d");
             this.on("hit", this, "sensor");
@@ -1230,11 +1261,12 @@ window.addEventListener("load", function() {
 
     });
 
-    // Emerald
+    // ESMERALDA
     Q.Sprite.extend("EmeraldBlock",{
         init: function(p) {
             this._super(p, {
-            asset: "orange_block_emerald.png"
+            asset: "orange_block_emerald.png",
+            gravity: 0
         });
             this.add("2d");
             this.on("hit", this, "sensor");
@@ -1247,11 +1279,12 @@ window.addEventListener("load", function() {
         }
     });
 
-    // Extra life
+    // VIDA EXTRA
     Q.Sprite.extend("ExtraLifeBlock",{
         init: function(p) {
             this._super(p, {
-            asset: "orange_block_extraLife.png"
+            asset: "orange_block_extraLife.png",
+            gravity: 0
         });
             this.add("2d");
             this.on("hit", this, "sensor");
@@ -1265,11 +1298,12 @@ window.addEventListener("load", function() {
         }
     });
 
-    // Bell
+    // CAMPANA
     Q.Sprite.extend("BellBlock",{
         init: function(p) {
             this._super(p, {
-            asset: "orange_block_bell.png"
+            asset: "orange_block_bell.png",
+            gravity: 0
         });
             this.add("2d");
             this.on("hit", this, "sensor");
